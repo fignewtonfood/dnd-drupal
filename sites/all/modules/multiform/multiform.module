@@ -73,16 +73,16 @@ function multiform_first_form($form, $form_state) {
         12 => 'Goliath',
     );
 
-    $form['user_race']['corerace'] = array(
+    $form['user_race']['core_race'] = array(
         '#type' => 'select',
         '#options' => $checkboxes,
         '#title' => t('Pick a race'),
-        '#default_value' => isset($values['corerace']) ? $values['corerace'] : NULL,
+        '#default_value' => isset($values['core_race']) ? $values['core_race'] : NULL,
         '#required' => TRUE,
     );
 
+    drupal_add_js('sites/all/modules/multiform/multiform.js');
 
-    
   $form['user_race']['first_name'] = array(
     '#type' => 'textfield',
     '#title' => t('First Name'),
@@ -116,7 +116,7 @@ function multiform_first_form_submit($form, &$form_state) {
 
   // Save values to the form storage, add the next step function callback
   $form_state['rebuild'] = TRUE;  // This is very important to have!
-  $form_state['storage']['corerace'] = check_plain($form_state['values']['corerace']);
+  $form_state['storage']['core_race'] = check_plain($form_state['values']['core_race']);
   $form_state['storage']['first_name'] = htmlspecialchars($form_state['values']['first_name']);
   $form_state['storage']['last_name'] = htmlspecialchars($form_state['values']['last_name']);
   $form_state['storage']['email'] = check_plain($form_state['values']['email']);
