@@ -1,0 +1,12 @@
+name = Dice roller - FATE / Fudge
+description = Provides FATE rolls for Dice Roller
+package = RPG
+core = 7.x
+dependencies[] = dice_roller
+dependencies[] = dice_roller_basic
+; Information added by Drupal.org packaging script on 2015-03-12
+version = "7.x-1.10"
+core = "7.x"
+project = "dice_roller"
+datestamp = "1426196282"
+

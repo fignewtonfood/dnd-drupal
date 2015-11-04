@@ -1,0 +1,191 @@
+<?php
+
+/**
+ * @file
+ * Adds a dice form to comments and nodes, allowing users to generate a dice roll for each without being able to tamper with results.
+ * All rolls associated with content are displayed with the content.
+ */
+
+include_once 'dice_roller.node.inc';
+
+include_once 'dice_roller.comment.inc';
+
+/**
+ * Implements hook_init().
+ */
+function dice_roller_init() {
+  /* Include xmlrpc support if and only if the option is enabled. */
+  if (variable_get('dice_roller_xmlrpc_allowed', '') == 1) {
+    module_load_include('inc', 'dice_roller', 'dice_roller.xmlrpc');
+  }
+}
+
+/**
+ * Implements hook_menu().
+ */
+function dice_roller_menu() {
+  $items['admin/structure/dice_roller'] = array(
+    'title' => 'Dice roller',
+    'description' => 'Configure the dice rollers.', 
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('dice_roller_admin_settings'),
+    'access arguments' => array('administer dice roller'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'dice_roller.admin.inc',
+  );
+  $items['dice_roller/remote_roll/make_roll'] = array(
+    'title' => 'Dice roller: make API roll',
+    'page callback' => '_dice_roller_make_remote_roll',
+    'access callback' => '_dice_roller_check_remote_access',
+    'type' => MENU_CALLBACK,
+    'file' => 'dice_roller.api.inc',
+  );
+  $items['dice_roller/remote_roll/get_roll'] = array(
+    'title' => 'Dice Roller: get API roll',
+    'page callback' => '_dice_roller_get_remote_roll',
+    'access callback' => '_dice_roller_check_remote_access',
+    'type' => MENU_CALLBACK,
+    'file' => 'dice_roller.api.inc',
+  );
+  return $items;
+}
+
+/**
+ * Menu permission callback for remote API functions
+ */
+function _dice_roller_check_remote_access() {
+  if (variable_get('dice_roller_remote_allowed', '') == 1) {
+    return TRUE;
+  }
+  return FALSE;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function dice_roller_permission() {
+  return array(
+    'administer dice roller' => array(
+      'title' => t('administer dice roller'),
+      'description' => t('Administer dice roller.'),
+    ),
+    'use dice roller' => array(
+      'title' => t('use dice roller'),
+      'description' => t('Use dice roller.'),
+    ),
+    'view dice rolls' => array(
+      'title' => t('view dice rolls'),
+      'description' => t('View dice results.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_form_alter().
+ *
+ * Add the number input to both comment and form.
+ */
+function dice_roller_form_alter(&$form, &$form_state, $form_id) {
+  if (!user_access('use dice roller')) {
+    return; /* Exit if this user can't use the dice roller */
+  }
+  // Check for supported forms.
+  _dice_roller_form_alter_comment($form, $form_state, $form_id);
+  _dice_roller_form_alter_node($form, $form_state, $form_id);
+  return $form;
+}
+
+/**
+ * Implements hook_field_extra_fields().
+ */
+function dice_roller_field_extra_fields() {
+  // Add extra fields to given nodes so we can place them in displays.
+  $types = array_keys(node_type_get_types());
+  $extra = array();
+  foreach ($types as $type) {
+    // Check for supported forms.
+    _dice_roller_field_extra_fields_nodes($extra, $type);
+    _dice_roller_field_extra_fields_comments($extra, $type);
+  }
+  return $extra;
+}
+
+/**
+ * Implements hook_theme().
+ *
+ * Register themes used by this module.
+ */
+function dice_roller_theme($existing, $type, $theme, $path) {
+  return array(
+    'dice_roller_results' => array(
+      'variables' => array('dice_rolls' => array()),
+      'template' => 'templates/dice-roller-results',
+    ),
+  );
+}
+
+/**
+ * Database related functions.
+ */
+
+/**
+ * Delete roll set, given the associated post id and origin type. Called when a node or comment is deleted to avoid orphaned data.
+ */
+function _dice_roller_delete_roll($pid, $origin) {
+  db_delete('dice_roller')
+    ->condition('pid', $pid)
+    ->condition('origin', $origin, 'LIKE')
+    ->execute();
+}
+
+/**
+ * Retrieve roll set data, given the associated post id and origin type.
+ */
+function _dice_roller_get_roll($pid, $origin) {
+  if ( (empty($pid)) || (empty($origin)) ) {
+    return;
+  }
+  $str_rolls = '';
+  $die_rolls = db_query('SELECT * FROM {dice_roller} ' .
+    'WHERE pid = :pid ' .
+    'AND origin LIKE :origin ' .
+    'ORDER BY did',
+    array(':pid' => $pid, ':origin' => $origin));
+  $rolls = array();
+  while ($roll = $die_rolls->fetchAssoc()) {
+    $rolls[] = $roll;
+  }
+  return $rolls;
+}
+
+/**
+ * Save roll set data to the database.
+ */
+function _dice_roller_insert_roll($roll_command, $roll_result, $roll_notes, $pid = -1, $origin = 'e') {
+  $new_pid = FALSE;
+  if ($pid == -1) {
+    $new_pid = TRUE;
+    $pid = 0;
+  }
+  $did = db_insert('dice_roller')
+    ->fields(array(
+    'pid' => $pid,
+    'origin' => $origin,
+    'roll_command' => $roll_command,
+    'roll_result' => $roll_result,
+    'roll_notes' => $roll_notes,
+    ))
+    ->execute();
+  if (!empty($did)) {
+    if ($new_pid) {
+      db_update('dice_roller')
+        ->fields(array(
+          'pid' => $did,
+        ))
+        ->condition('did', $did)
+        ->execute();
+    }
+    return $did;
+  }
+  return FALSE;
+}

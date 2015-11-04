@@ -1,0 +1,42 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Provides FATE rolls for Dice Roller
+ */
+
+/**
+ * Implements hook_dice_roller_register_roll(), registers dice roller functions.
+ */
+function fate_dice_dice_roller_register_keywords() {
+  $rolls['fate'] = array(
+    'post_callback' => '_fate_dice_post_roll',
+    'help' => 'fate - roll d6s and read as FATE dice: 4d6.fate()',
+  );
+  return $rolls;
+}
+
+/**
+ * Adjust values of FATE rolls.
+ */
+function _fate_dice_post_roll($context, $roll_set, $parameters) {
+  // Translate each roll into values.
+  foreach ($roll_set as $key => $roll) {
+    if ($roll_set[$key]['result'] == 1 || $roll_set[$key]['result'] == 2) {
+      $roll_set[$key]['result'] = '-1';
+    }
+    if ($roll_set[$key]['result'] == 3 || $roll_set[$key]['result'] == 4) {
+      $roll_set[$key]['result'] = '0';
+    }
+    if ($roll_set[$key]['result'] == 5 || $roll_set[$key]['result'] == 6) {
+      $roll_set[$key]['result'] = '+1';
+    }
+    if (is_array($roll_set[$key]['extra'])) {
+      // Hey look. More recursion. Thankfully no risk of infinatus.
+      // Just check if a subroll exists, and if so tweak it.
+      $roll_set[$key]['extra'] = _fate_dice_post_roll($context, $roll_set[$key]['extra'], $parameters);
+    }
+  }
+  return $roll_set;
+}

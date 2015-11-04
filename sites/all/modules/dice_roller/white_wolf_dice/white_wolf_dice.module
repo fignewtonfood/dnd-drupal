@@ -1,0 +1,63 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Provides White Wolf style rolls for Dice Roller (1's subtract).
+ */
+
+/**
+ * Implements hook_dice_roller_register_roll(), registers dice roller functions.
+ */
+function white_wolf_dice_dice_roller_register_keywords() {
+  $rolls['ww'] = array(
+    'post_callback' => '_white_wolf_dice_post_roll',
+    'output_callback' => '_dice_roller_basic_roll_hits',
+    'help' => 'ww - roll the dice and count the hits greater than or equal to X, ' .
+                         'results of 1 subtract hits: 7d10.ww(6)',
+  );
+  $rolls['ww_tens'] = array(
+    'mid_callback' => '_white_wolf_dice_mid_roll',
+    'post_callback' => '_white_wolf_dice_post_roll',
+    'output_callback' => '_dice_roller_basic_roll_hits',
+    'help' => 'ww - roll the dice and count the hits greater than or equal to X, ' .
+                         'adding an extra die for any value equal to 10, ' .
+                         'results of 1 subtract hits: 7d10.ww_tens(6)',
+  );
+  return $rolls;
+}
+
+/**
+ * Dice roller default keyword functions
+ */
+function _white_wolf_dice_mid_roll($context, $this_roll, $parameters) {
+  $parameters[0] = 10; // Reroll for 10s.
+  return _dice_roller_basic_roll_open($context, $this_roll, $parameters);
+}
+
+/**
+ * Read WW rolls, subtract ones.
+ */
+function _white_wolf_dice_post_roll($context, $roll_set, $parameters) {
+  // Count how many 1's we have.
+  $remove = 0;
+  $tmp_roll_set = $roll_set;
+  foreach ($tmp_roll_set as $index => $this_roll) {
+    $this_roll['extra'] = _dice_roller_flatten_set($this_roll['extra']);
+    if ($this_roll['result'] == 1) {
+      $remove++;
+    }
+  }
+  // Now we know how many we have to remove.
+  if ($remove > 0) {
+    $target = $parameters[0];
+    foreach ($roll_set as $index => $this_roll) {
+      $this_roll['extra'] = _dice_roller_flatten_set($this_roll['extra']);
+      if ($this_roll['result'] >= $target && $remove > 0) {
+        $this_roll['read'] = FALSE;
+        $remove--;
+      }
+    }
+  }
+  return $roll_set;
+}

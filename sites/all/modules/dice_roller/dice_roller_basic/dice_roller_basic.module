@@ -1,0 +1,294 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Adds basic dice roller options.
+ */
+
+/**
+ * Implementation of hook_dice_roller_form(), which returns a form for handling basic style rolls.
+ */
+function dice_roller_basic_dice_roller_form($parent_form, $parent_form_state, $parent_form_id) {
+  $form['dice_rolls'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Roll dice'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+    '#tree' => TRUE,
+  );
+  $form['dice_rolls']['roll_command'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Roll'),
+    '#description' => t('Make your roll, the basic format is 1d20. See the help for more examples if you need them.'),
+  );
+  $form['dice_rolls']['roll_notes'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Notes'),
+    '#rows' => 2,
+    '#description' => t('Include any notes for others regarding your dice roll.'),
+  );
+  $roll_register = module_invoke_all('dice_roller_register_keywords');
+  $approved_commands = variable_get('dice_roller_keywords', array());
+  $roll_help = array();
+  foreach ($roll_register as $command => $command_values) {
+    if (drupal_strlen($roll_register[$command]['help']) > 0) {
+      if (isset($approved_commands[$command]) && $command === $approved_commands[$command]) {
+        $roll_help[] = $roll_register[$command]['help'];
+      }
+    }
+  }
+  $form['dice_rolls']['help'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Help'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+    '#description' => theme('dice_roller_basic_help', array('roll_help' => $roll_help)),
+  );
+  return $form;
+}
+
+/**
+ * Implementation of hook_dice_roller_form_submit(), which returns a form for handling basic style rolls.
+ */
+function dice_roller_basic_dice_roller_form_submit($content, $origin = 'node') {
+  switch ($origin) {
+    case 'node':
+      if (!empty($content->dice_rolls['roll_command'])) {
+        $dids = _dice_roller_parse_roll($content->dice_rolls['roll_command'], $content->dice_rolls['roll_notes'], $content->nid, 'n');
+      }
+      break;
+    case 'comment':
+      if (!empty($content->dice_rolls['roll_command'])) {
+        $dids = _dice_roller_parse_roll($content->dice_rolls['roll_command'], $content->dice_rolls['roll_notes'], $content->cid, 'c');
+      }
+      break;
+  }
+}
+
+/**
+ * Implements hook_theme().
+ *
+ * Register themes used by this module.
+ */
+function dice_roller_basic_theme($existing, $type, $theme, $path) {
+  return array(
+    'dice_roller_basic_help' => array(
+      'variables' => array('roll_help' => array()),
+      'template' => 'templates/dice-roller-basic-help',
+    ),
+  );
+}
+
+/**
+ * Implements hook_dice_roller_register_roll(), registers dice roller functions.
+ *
+ * Each keyword is defined as part of an array, of the following format:
+ *
+ * $rolls['keyword'] = array(
+ *   'pre_callback'    => 'callback_function_name',
+ *   'mid_callback'    => 'callback_function_name',
+ *   'post_callback'   => 'callback_function_name',
+ *   'read_callback'   => 'callback_function_name',
+ *   'output_callback' => 'callback_function_name',
+ *   'help'            => 'help text',
+ * );
+ *
+ * All callbacks do not have to be defined.
+ * Keywords are ALWAYS LOWER CASE.
+ * User entry is case-insensitive, and all keywords are converted to lowercase in processing.
+ * This function returns an array of defined keywords.
+ */
+function dice_roller_basic_dice_roller_register_keywords() {
+
+  $rolls['minroll'] = array(
+    'pre_callback' => '_dice_roller_basic_roll_minroll',
+    'help' => 'minroll - no die roll lower than X: 10d10.minroll(4)',
+  );
+  $rolls['extra'] = array(
+    'mid_callback' => '_dice_roller_basic_roll_extra',
+    'help' => 'extra - roll an extra die when roll greater or equal to X: 10d10.extra(9)',
+  );
+  $rolls['open'] = array(
+    'mid_callback' => '_dice_roller_basic_roll_open',
+    'help' => 'open - same as extra but roll extra dice until a die is not greater or equal to X: 10d10.open(9)',
+  );
+  $rolls['each'] = array(
+    'post_callback' => '_dice_roller_basic_roll_each',
+    'help' => 'each - apply X value to all dice: 10d10.each(2) or 10d10.each(-2)',
+  );
+  $rolls['hitsopen'] = array(
+    'mid_callback' => '_dice_roller_basic_roll_hitsopen_open',
+    'output_callback' => '_dice_roller_basic_roll_hitsopen_hits',
+    'help' => 'hitsopen - roll the dice and count the hits greater than or equal to X, ' .
+      'adding an extra die for any value equal or greater than Y: 7d6.hitsopen(5,6)',
+  );
+  $rolls['takehighest'] = array(
+    'read_callback' => '_dice_roller_basic_roll_takehighest',
+    'help' => 'takehighest - take highest X rolls: 10d10.takehighest(4)',
+  );
+  $rolls['takelowest'] = array(
+    'read_callback' => '_dice_roller_basic_roll_takelowest',
+    'help' => 'takelowest - take lowest X rolls: 10d10.takelowest(4)',
+  );
+  $rolls['hits'] = array(
+    'output_callback' => '_dice_roller_basic_roll_hits',
+    'help' => 'roll the dice and count the hits greater than or equal to X: 5d6.hits(5)',
+  );
+  $rolls['sumto'] = array(
+    'output_callback' => '_dice_roller_basic_roll_sumto',
+    'help' => 'sum a value against a target: 3d6.sumto(10)',
+  );
+  return $rolls;
+}
+
+/**
+ * Dice roller default keyword functions
+ */
+function _dice_roller_basic_roll_minroll($context, $parameters) {
+  if (is_numeric($parameters[0]) && ($parameters[0] < $context['max'])) {
+    $context['min'] = $parameters[0];
+  }
+  return $context;
+}
+
+function _dice_roller_basic_roll_extra($context, $this_roll, $parameters) {
+  if (is_numeric($parameters[0]) && ($parameters[0] <= $this_roll['result'])) {
+    $extra_roll = array(
+      'result' => NULL,
+      'extra' => NULL,
+      'read' => TRUE,
+    );
+    $extra_roll['result'] = mt_rand($context['min'], $context['max']);
+    $this_roll['extra'] = array($extra_roll); //Only one for the extra die.
+  }
+  return $this_roll;
+}
+
+function _dice_roller_basic_roll_hitsopen_open($context, $this_roll, $parameters) {
+  $parameters[0] = $parameters[1];
+  return _dice_roller_basic_roll_open($context, $this_roll, $parameters);
+}
+
+function _dice_roller_basic_roll_open($context, $this_roll, $parameters) {
+  if (is_numeric($parameters[0]) && ($parameters[0] <= $this_roll['result']) && ($parameters[0] > $context['min'])) {
+    $extra_roll = array(
+      'result' => NULL,
+      'extra' => NULL,
+      'read' => TRUE,
+    );
+    $extra_roll['result'] = mt_rand($context['min'], $context['max']);
+    // This is where we get recursive.
+    // Eventually this repeat will end when result is less than the open param (or min).
+    // Context is passed by reference, so will create a tree of rolls.
+    $extra_roll = _dice_roller_basic_roll_extra($context, $extra_roll, $parameters);
+    $this_roll['extra'] = array($extra_roll);
+  }
+  return $this_roll;
+}
+
+function _dice_roller_basic_roll_each($context, $roll_set, $parameters) {
+  if (is_numeric($parameters[0])) {
+    foreach ($roll_set as $key => $roll) {
+      $roll_set[$key]['result'] = $roll_set[$key]['result'] + $parameters[0];
+      if (is_array($roll_set[$key]['extra'])) {
+        // Hey look. More recursion. Thankfully no risk of infinatus.
+        // Just check if a subroll exists, and if so, add to it.
+        $roll_set[$key]['extra'] = _dice_roller_basic_roll_each($context, $roll_set[$key]['extra'], $parameters);
+      }
+    }
+  }
+  return $roll_set;
+}
+
+function _dice_roller_basic_roll_takelowest($context, $roll_set, $parameters) {
+  if (is_numeric($parameters[0])) {
+    // First, flatten the set.
+    $flat_set = _dice_roller_flatten_set($roll_set);
+    if (count($flat_set) <= $parameters[0]) {
+      return $flat_set;
+    }
+    $flat_results = array();
+    foreach ($flat_set as $this_roll) {
+      $flat_results[] = $this_roll['result'];
+    }
+    // Now, with a flat result set, grab the selection we need.
+    $lowest_set = array();
+    sort($flat_results);
+    $marked_set = array();
+    foreach ($flat_results as $key => $this_roll) {
+      if ($parameters[0] <= $key) {
+        $marked_set[] = array(
+          'result' => $this_roll,
+          'extra' => NULL,
+          'read' => FALSE,
+        );
+      }
+      else {
+        $marked_set[] = array(
+          'result' => $this_roll,
+          'extra' => NULL,
+          'read' => TRUE,
+        );
+      }
+    }
+  }
+  $roll_set = $marked_set;
+  return $roll_set;
+}
+
+function _dice_roller_basic_roll_takehighest($context, $roll_set, $parameters) {
+  if (is_numeric($parameters[0])) {
+    // First, flatten the set.
+    $flat_set = _dice_roller_flatten_set($roll_set);
+    if (count($flat_set) <= $parameters[0]) {
+      return $flat_set;
+    }
+    $flat_results = array();
+    foreach ($flat_set as $this_roll) {
+      $flat_results[] = $this_roll['result'];
+    }
+    // Now, with a flat set, grab the selection we need.
+    $highestSet = array();
+    rsort($flat_results);
+    $marked_set = array();
+    foreach ($flat_results as $key => $this_roll) {
+      if ($parameters[0] <= $key) {
+        $marked_set[] = array(
+          'result' => $this_roll,
+          'extra' => NULL,
+          'read' => FALSE,
+        );
+      }
+      else {
+        $marked_set[] = array(
+          'result' => $this_roll,
+          'extra' => NULL,
+          'read' => TRUE,
+        );
+      }
+    }
+  }
+  $roll_set = $marked_set;
+  return $roll_set;
+}
+
+function _dice_roller_basic_roll_hitsopen_hits($context, $roll_set, $display_format, $parameters) {
+  return _dice_roller_basic_roll_hits($context, $roll_set, $display_format, $parameters);
+}
+
+function _dice_roller_basic_roll_hits($context, $roll_set, $display_format, $parameters) {
+  if (is_numeric($parameters[0])) {
+    $display_format['mode'] = 'hits';
+    $display_format['target'] = $parameters[0];
+  }
+  return $display_format;
+}
+
+function _dice_roller_basic_roll_sumto($context, $roll_set, $display_format, $parameters) {
+  if (is_numeric($parameters[0])) {
+    $display_format['mode'] = 'sumto';
+    $display_format['target'] = $parameters[0];
+  }
+  return $display_format;
+}

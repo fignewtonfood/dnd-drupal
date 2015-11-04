@@ -1,0 +1,11 @@
+name = Dice roller basic
+description = Provides basic roll types for Dice Roller
+package = RPG
+core = 7.x
+dependencies[] = dice_roller
+; Information added by Drupal.org packaging script on 2015-03-12
+version = "7.x-1.10"
+core = "7.x"
+project = "dice_roller"
+datestamp = "1426196282"
+
