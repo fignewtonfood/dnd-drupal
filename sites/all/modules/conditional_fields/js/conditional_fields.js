@@ -80,6 +80,7 @@ $(document).bind('state:visible-fade', function(e) {
   }
 })
 // Empty/Filled.
+.bind('state:empty', function(){})
 .bind('state:empty-empty', function(e) {
   if (e.trigger) {
     var field = $(e.target).find('input, select, textarea');
@@ -98,7 +99,7 @@ $(document).bind('state:visible-fade', function(e) {
   if (e.trigger) {
     var field = $(e.target).find('input, select, textarea');
     if (e.effect.reset) {
-      if (typeof oldValue === 'undefined' || field.val() !== e.effect.value) {
+      if (typeof oldValue === 'undefined' || field.val() === e.effect.value) {
         oldValue = field.val();
       }
       field.val(!e.value ? e.effect.value : oldValue);

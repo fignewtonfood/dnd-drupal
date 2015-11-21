@@ -1,0 +1,88 @@
+<?php
+
+function character_attributes_form_alter(&$form, &$form_state, $form_id, $node) {
+    // find form id on target page
+    // print_r($form_id);
+    if ($form_id == 'fifth_cleric_character_node_form') {
+        // print entire form so that you can find a specific value
+        // print '<pre>';
+        // print_r($form);
+        // print '</pre>';
+        
+        $number_of_attributes = 6;
+        $attribute = array();
+        $modifiers = array();
+
+        while ($number_of_attributes > 0) {
+            $number_of_attributes--;
+        
+            $dice_array = array();
+            $number_of_dice = 4;
+            $dice_min = 1;
+            $dice_max = 6;
+            
+            while ($number_of_dice > 0) {
+                $number_of_dice--;
+                array_push($dice_array, (rand($dice_min, $dice_max)));
+            }
+            
+            sort ($dice_array, SORT_NUMERIC);
+            array_shift($dice_array);
+            $dice_roll_total = array_sum($dice_array);
+            array_push($attribute, $dice_roll_total);
+        }   
+        
+        
+        // $items = field_get_items('node', $node, 'field_race');
+        // $item = array_shift($items);
+        // $race = $item[0]['value'];
+        
+        
+        
+        // // $race = $form['field_race']['und'];
+        // print '<pre>';
+        // print_r($race);
+        // print '</pre>';
+
+        
+        //translates attributes to modifiers
+        foreach ($attribute as $stat) {
+            if ($stat == 3) {
+                array_push($modifiers, -4);
+            } elseif ($stat == 4 || $stat == 5) {
+                array_push($modifiers, -3);
+            } elseif ($stat == 6 || $stat == 7) {
+                array_push($modifiers, -2);
+            } elseif ($stat == 8 || $stat == 9) {
+                array_push($modifiers, -1);
+            } elseif ($stat == 10 || $stat == 11) {
+                array_push($modifiers, 0);
+            } elseif ($stat == 12 || $stat == 13) {
+                array_push($modifiers, 1);
+            } elseif ($stat == 14 || $stat == 15) {
+                array_push($modifiers, 2);
+            } elseif ($stat == 16 || $stat == 17) {
+                array_push($modifiers, 3);
+            } else {
+                array_push($modifiers, 4);
+            }
+        }
+        
+        $form['field_fifth_class']['und']['#prefix'] = "<div style='display: none'>";
+        $form['field_fifth_class']['und']['#suffix'] = "</div>";
+        
+        $form['field_fifth_strength']['und']['0']['value']['#default_value'] = $attribute[0];
+        $form['field_fifth_dexterity']['und']['0']['value']['#default_value'] = $attribute[1];
+        $form['field_fifth_constitution']['und']['0']['value']['#default_value'] = $attribute[2];
+        $form['field_fifth_intelligence']['und']['0']['value']['#default_value'] = $attribute[3];
+        $form['field_fifth_wisdom']['und']['0']['value']['#default_value'] = $attribute[4];
+        $form['field_fifth_charisma']['und']['0']['value']['#default_value'] = $attribute[5];
+        
+        $form['field_fifth_strength_modifier']['und']['0']['value']['#default_value'] = $modifiers[0];
+        $form['field_fifth_dexterity_modifier']['und']['0']['value']['#default_value'] = $modifiers[1];
+        $form['field_fifth_constitution_modifie']['und']['0']['value']['#default_value'] = $modifiers[2];
+        $form['field_fifth_intelligence_modifie']['und']['0']['value']['#default_value'] = $modifiers[3];
+        $form['field_fifth_wisdom_modifier']['und']['0']['value']['#default_value'] = $modifiers[4];
+        $form['field_fifth_charisma_modifier']['und']['0']['value']['#default_value'] = $modifiers[5];
+    }   
+}

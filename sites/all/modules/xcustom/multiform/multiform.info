@@ -1,0 +1,5 @@
+name = Multi Form
+description = Creates a multi-step form.
+core = 7.x
+package = Custom
+version = 7.0

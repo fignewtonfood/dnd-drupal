@@ -1,0 +1,5 @@
+name = 5th Edition D&D Character Creator
+description = Assists user in creating a D&D character for 5th edition.
+package = DnD Suite
+core = 7.x
+files[] = character_creator.module

@@ -1,0 +1,5 @@
+name = Cleric form editing
+description = Handle editing cleric form
+package = DnD Suite
+core = 7.x
+files[] = character_cleric.module

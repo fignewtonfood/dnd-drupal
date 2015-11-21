@@ -1,0 +1,4 @@
+name = Set character attributes
+description = Handle assigning of character attributes
+package = Custom
+core = 7.x

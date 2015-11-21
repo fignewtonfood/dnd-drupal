@@ -1,0 +1,23 @@
+diff --git a/js/conditional_fields.js b/js/conditional_fields.js
+index a45961f..ae26816 100644
+--- a/js/conditional_fields.js
++++ b/js/conditional_fields.js
+@@ -79,7 +79,8 @@ $(document).bind('state:visible-fade', function(e) {
+     $(e.target).closest('.form-item, .form-submit, .form-wrapper')[e.value ? 'slideDown' : 'slideUp'](e.effect.speed);
+   }
+ })
+-// Empty/Filled.
++// Empty/Filled. The base state must also be bound for effects to be triggered.
++.bind('state:empty', function() {})
+ .bind('state:empty-empty', function(e) {
+   if (e.trigger) {
+     var field = $(e.target).find('input, select, textarea');
+@@ -98,7 +99,7 @@ $(document).bind('state:visible-fade', function(e) {
+   if (e.trigger) {
+     var field = $(e.target).find('input, select, textarea');
+     if (e.effect.reset) {
+-      if (typeof oldValue === 'undefined' || field.val() !== e.effect.value) {
++      if (typeof oldValue === 'undefined' || field.val() === e.effect.value) {
+         oldValue = field.val();
+       }
+       field.val(!e.value ? e.effect.value : oldValue);
