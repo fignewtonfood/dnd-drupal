@@ -127,18 +127,41 @@ function character_attributes_form_alter(&$form, &$form_state, $form_id, $node) 
         
         //adding AJAX to check race and add bonuses accordingly
         //this is the part being refreshed
-        $form['field_fifth_constitution']['und']['#prefix'] = '<div id="race-check">';
-        $form['field_fifth_constitution']['und']['#suffix'] = '</div>';
-        
-        $form['field_fifth_wisdom']['und']['#prefix'] = '<div id="subrace-check">';
-        $form['field_fifth_wisdom']['und']['#suffix'] = '</div>';
+        $form['field_fifth_constitution']['und']['#prefix'] = '<div id="race-check-con">';
+        $form['field_fifth_speed']['und']['#prefix'] = '<div id="race-check-speed">';
+        $form['field_fifth_racial_features']['und']['#prefix'] = '<div id="race-check-features">';
+        $form['field_fifth_constitution_modifie']['und']['#prefix'] = '<div id="race-check-conmod">';
+        $form['field_fifth_hit_dice']['und']['#prefix'] = '<div id="race-check-hit-dice">';
 
+        $form['field_fifth_constitution']['und']['#suffix'] = 
+        $form['field_fifth_speed']['und']['#suffix'] = 
+        $form['field_fifth_racial_features']['und']['#suffix'] = 
+        $form['field_fifth_constitution_modifie']['und']['#suffix'] = 
+        $form['field_fifth_hit_dice']['und']['#suffix'] = 
+            '</div>';
+
+        $form['field_fifth_wisdom']['und']['#prefix'] = '<div id="subrace-check-wis">';
+        $form['field_fifth_subracial_features']['und']['#prefix'] = '<div id="subrace-check-features">';
+        $form['field_fifth_hit_points']['und']['#prefix'] = '<div id="subrace-check-hp">';
         
-        
+        $form['field_fifth_wisdom']['und']['#suffix'] = 
+        $form['field_fifth_hit_points']['und']['#suffix'] = 
+        $form['field_fifth_subracial_features']['und']['#suffix'] = '</div>';
+
+        $dwarven_features = array();
+        $dwarven_features[] = "Age. Dwarves mature at the same rate as humans, but they’re considered young until they reach the age of 50. On average, they live about 350 years.";
+        $dwarven_features[] = "Alignment. Most dwarves are lawful, believing firmly in the benefits of a well-ordered society. They tend toward good as well, with a strong sense of fair play and a belief that everyone deserves to share in the benefits of a just order.";
+        $dwarven_features[] = "Size. Dwarves stand between 4 and 5 feet tall and average about 150 pounds. Your size is Medium.";
+        $dwarven_features[] = "Darkvision. Accustomed to life underground, you have superior vision in dark and dim conditions. You can see in dim light within 60 feet of you as if it were bright light, and in darkness as if it were dim light. You can’t discern color in darkness, only shades of gray.";
+        $dwarven_features[] = "Dwarven Resilience. You have advantage on saving throws against poison, and you have resistance against poison damage.";
+        $dwarven_features[] = "Dwarven Combat Training. You have proficiency with the battleaxe, handaxe, throwing hammer, and warhammer.";
+        $dwarven_features[] = "Tool Proficiency. You gain proficiency with the artisan’s tools of your choice: smith’s tools, brewer’s supplies, or mason’s tools.";
+        $dwarven_features[] = "Stonecunning. Whenever you make an Intelligence (History) check related to the origin of stonework, you are considered proficient in the History skill and add double your proficiency bonus to the check, instead of your normal proficiency bonus.";
+        $dwarven_features[] = "Languages. You can speak, read, and write Common and Dwarvish. Dwarvish is full of hard consonants and guttural sounds, and those characteristics spill over into whatever other language a dwarf might speak.";
         
         //triggers the replacement
         $form['field_race']['und']['#ajax'] = array(
-            'callback' => 'character_attributes_custom_ajax_callback',
+            'callback' => 'character_attributes_dwarven_ajax_callback',
             'wrapper' => 'race-check',
         );
         
@@ -149,65 +172,62 @@ function character_attributes_form_alter(&$form, &$form_state, $form_id, $node) 
 
         
         // print '<pre>';
-        // print_r($form);
+        // print_r($form['field_fifth_racial_features']);
         // print '</pre>';
+        
                     
         //logic for AJAX call
+        //Dwarven logics
         if(!empty($form_state['values']['field_race'])) {
             if ($form_state['values']['field_race']['und'][0]['value']='Dwarf') {
                 $current_con = $form_state['input']['field_fifth_constitution']['und'][0]['value'];
                 unset($form_state['input']['field_fifth_constitution']['und'][0]['value']);
                 $form['field_fifth_constitution']['und'][0]['value']['#default_value'] = 2+$current_con;
+                $current_conmod = $form_state['input']['field_fifth_constitution_modifie']['und'][0]['value'];
+                unset($form_state['input']['field_fifth_constitution_modifie']['und'][0]['value']);
+                $form['field_fifth_constitution_modifie']['und'][0]['value']['#default_value'] = $current_conmod + 1;
+                unset($form_state['input']['field_fifth_speed']['und'][0]['value']);
+                $form['field_fifth_speed']['und'][0]['value']['#default_value'] = 25;
+                unset($form_state['input']['field_fifth_racial_features']['und'][0]['value']);
+                $i = 0;
+                while($i<count($dwarven_features)) {
+                    unset($form_state['input']['field_fifth_racial_features']['und'][$i]['value']);
+                    $form['field_fifth_racial_features']['und'][$i]['value']['#default_value'] = $dwarven_features[$i];
+                    $i++;
+                }
+                unset($form_state['input']['field_fifth_hit_dice']['und'][0]['value']);
+                $form['field_fifth_hit_dice']['und'][0]['value']['#default_value'] = '1d8';
             } 
         }
         if(!empty($form_state['values']['field_fifth_dwarven_sub_race'])) {
-            if ($form_state['values']['field_fifth_dwarven_sub_race']['und'][0]['value']='Hill') {
+            if ($form_state['values']['field_fifth_dwarven_sub_race']['und'][0]['value'] = 'Hill') {
                 $current_wis = $form_state['input']['field_fifth_wisdom']['und'][0]['value'];
                 unset($form_state['input']['field_fifth_wisdom']['und'][0]['value']);
-                $form['field_fifth_wisdom']['und'][0]['value']['#default_value'] = 1+$current_wis;
-            } 
-        }
-        
-        //testing background options
-        $options = array(
-            'testkey' => 'testvalue',
-            'testkey2' => 'testvalue2',
-        );
-        $form['field_fifth_backgrounds']['und']['#ajax'] = array(
-                'wrapper' => 'personality-wrapper',
-                'callback' => 'character_attributes_ajax_callback',
-        );
-
-        $form['field_fifth_background_personali'] = array('#prefix' => '<div class="personality-wrapper">', '#suffix' => '</div>');
-        $form['field_fifth_background_personali']['und'] = array(
-          '#options' => $options,
-        );
-        
-        $background = isset($form_state['values']['field_fifth_backgrounds']) ? $form_state['values']['field_fifth_backgrounds'] : 'default';
-        switch ($background) {
-            case 'default':
-                $options = array();
-            break;
-            case 'Acolyte':
-                $options = array(
-                    'test' => 'test',
-                );
-            break;
+                $form['field_fifth_wisdom']['und'][0]['value']['#default_value'] = 1 + $current_wis;
+                unset($form_state['input']['field_fifth_subracial_features']['und'][0]['value']);
+                $form['field_fifth_subracial_features']['und'][0]['value']['#default_value'] = "Dwarven Toughness. Your hit point maximum increases by 1, and it increases by 1 every time you gain a level.";
+                unset($form_state['input']['field_fifth_hit_points']['und'][0]['value']);
+                $form['field_fifth_hit_points']['und'][0]['value']['#default_value'] = $current_conmod + 9;
+            }
         }
     }   
 }
 
 // AJAX callback function
-function character_attributes_custom_ajax_callback($form, $form_state) {
-    return $form['field_fifth_constitution'];
+function character_attributes_dwarven_ajax_callback($form, $form_state) {
+    $commands = array();
+    $commands[] = ajax_command_replace('#race-check-con', drupal_render($form['field_fifth_constitution']));
+    $commands[] = ajax_command_replace('#race-check-speed', drupal_render($form['field_fifth_speed']));
+    $commands[] = ajax_command_replace('#race-check-features', drupal_render($form['field_fifth_racial_features']));
+    $commands[] = ajax_command_replace('#race-check-conmod', drupal_render($form['field_fifth_constitution_modifie']));
+    $commands[] = ajax_command_replace('#race-check-hit-dice', drupal_render($form['field_fifth_hit_dice']));
+    return array('#type' => 'ajax', '#commands' => $commands);
 }
 
 function character_attributes_custom_ajax_callback2($form, $form_state) {
-    return $form['field_fifth_wisdom'];
+    $commands = array();
+    $commands[] = ajax_command_replace('#subrace-check-wis', drupal_render($form['field_fifth_wisdom']));
+    $commands[] = ajax_command_replace('#subrace-check-features', drupal_render($form['field_fifth_subracial_features']));
+    $commands[] = ajax_command_replace('#subrace-check-hp', drupal_render($form['field_fifth_hit_points']));
+    return array('#type' => 'ajax', '#commands' => $commands);
 }
-
-function character_attributes_ajax_callback($form, $form_state) {
-    return $form['field_fifth_background_personali'];
-}
-
-

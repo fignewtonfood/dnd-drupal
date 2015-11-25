@@ -104,7 +104,7 @@
 	color: #baeeff;
 	font-weight: bold;
 	padding: 9px;
-	padding-top: 0;
+	padding-top: 6px;
 	line-height: 1.3;
 	text-align: center;
 	border-radius: 8px;
@@ -119,11 +119,26 @@
 .personality-title {
     font-weight: bolder;
     text-align: center;
-    letter-spacing: 30px;
     font-size: 20px;
-    padding: 4px 8px 6px;
+    padding: 4px 8px -5px;
     color: white;
 }
+
+.racial-features-pane {
+    background-color: #282867;
+	color: white;
+	font-weight: bold;
+	padding: 6px;
+	line-height: 1.3;
+	text-align: center;
+	border-radius: 8px;
+	margin-bottom: -10px;
+	flex-grow: 1;
+	font-size: 14px;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+}
+
 
 /*.field-group-format-wrapper .required-fields .ui-accordion-content */
 /*.ui-helper-reset .ui-widget-content .ui-corner-bottom */
