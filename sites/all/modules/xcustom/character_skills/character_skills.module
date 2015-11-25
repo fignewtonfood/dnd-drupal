@@ -1,0 +1,33 @@
+<?php
+
+function character_skills_form_alter(&$form, &$form_state, $form_id, $node) {
+    // find form id on target page
+    // print_r($form_id);
+    if ($form_id == 'fifth_cleric_character_node_form') {
+        // print entire form so that you can find a specific value
+        // print '<pre>';
+        // print_r($form);
+        // print '</pre>';
+        
+
+        //hiding class field because it is needed for conditional field logic, but not needed for interface
+        $form['field_fifth_class']['und']['#prefix'] = "<div style='display: none'>";
+        $form['field_fifth_class']['und']['#suffix'] = "</div>";
+        
+        $form['field_fifth_strength']['und']['0']['value']['#default_value'] = $str;
+        $form['field_fifth_dexterity']['und']['0']['value']['#default_value'] = $dex;
+        $form['field_fifth_constitution']['und']['0']['value']['#default_value'] = $con;
+        $form['field_fifth_intelligence']['und']['0']['value']['#default_value'] = $int;
+        $form['field_fifth_wisdom']['und']['0']['value']['#default_value'] = $wis;
+        $form['field_fifth_charisma']['und']['0']['value']['#default_value'] = $cha;
+        
+        $form['field_fifth_strength_modifier']['und']['0']['value']['#default_value'] = $strmod;
+        $form['field_fifth_dexterity_modifier']['und']['0']['value']['#default_value'] = $dexmod;
+        $form['field_fifth_constitution_modifie']['und']['0']['value']['#default_value'] = $conmod;
+        $form['field_fifth_intelligence_modifie']['und']['0']['value']['#default_value'] = $intmod;
+        $form['field_fifth_wisdom_modifier']['und']['0']['value']['#default_value'] = $wismod;
+        $form['field_fifth_charisma_modifier']['und']['0']['value']['#default_value'] = $chamod;
+        
+    }   
+}
+

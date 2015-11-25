@@ -32,14 +32,21 @@ function character_attributes_form_alter(&$form, &$form_state, $form_id, $node) 
             array_push($attribute, $dice_roll_total);
         }   
         
+        sort ($attribute, SORT_NUMERIC);
+            
+        //for clerics only
+        $wis = $attribute[5];
+        $dex = $attribute[4];
+        $con = $attribute[3];
+        $str = $attribute[2];
+        $cha = $attribute[1];
+        $int = $attribute[0];
         
         // $items = field_get_items('node', $node, 'field_race');
         // $item = array_shift($items);
         // $race = $item[0]['value'];
         
-        
-        
-        // // $race = $form['field_race']['und'];
+        // $race = $form['field_fifth_constitution']['und'];
         // print '<pre>';
         // print_r($race);
         // print '</pre>';
@@ -68,21 +75,139 @@ function character_attributes_form_alter(&$form, &$form_state, $form_id, $node) 
             }
         }
         
+        sort ($modifiers, SORT_NUMERIC);
+
+        $wismod = $modifiers[5];
+        $dexmod = $modifiers[4];
+        $conmod = $modifiers[3];
+        $strmod = $modifiers[2];
+        $chamod = $modifiers[1];
+        $intmod = $modifiers[0];
+        
+
+        //hiding class field because it is needed for conditional field logic, but not needed for interface
         $form['field_fifth_class']['und']['#prefix'] = "<div style='display: none'>";
         $form['field_fifth_class']['und']['#suffix'] = "</div>";
         
-        $form['field_fifth_strength']['und']['0']['value']['#default_value'] = $attribute[0];
-        $form['field_fifth_dexterity']['und']['0']['value']['#default_value'] = $attribute[1];
-        $form['field_fifth_constitution']['und']['0']['value']['#default_value'] = $attribute[2];
-        $form['field_fifth_intelligence']['und']['0']['value']['#default_value'] = $attribute[3];
-        $form['field_fifth_wisdom']['und']['0']['value']['#default_value'] = $attribute[4];
-        $form['field_fifth_charisma']['und']['0']['value']['#default_value'] = $attribute[5];
+        //setting default attribute values
+        $form['field_fifth_strength']['und']['0']['value']['#default_value'] = $str;
+        $form['field_fifth_dexterity']['und']['0']['value']['#default_value'] = $dex;
+        $form['field_fifth_constitution']['und']['0']['value']['#default_value'] = $con;
+        $form['field_fifth_intelligence']['und']['0']['value']['#default_value'] = $int;
+        $form['field_fifth_wisdom']['und']['0']['value']['#default_value'] = $wis;
+        $form['field_fifth_charisma']['und']['0']['value']['#default_value'] = $cha;
         
-        $form['field_fifth_strength_modifier']['und']['0']['value']['#default_value'] = $modifiers[0];
-        $form['field_fifth_dexterity_modifier']['und']['0']['value']['#default_value'] = $modifiers[1];
-        $form['field_fifth_constitution_modifie']['und']['0']['value']['#default_value'] = $modifiers[2];
-        $form['field_fifth_intelligence_modifie']['und']['0']['value']['#default_value'] = $modifiers[3];
-        $form['field_fifth_wisdom_modifier']['und']['0']['value']['#default_value'] = $modifiers[4];
-        $form['field_fifth_charisma_modifier']['und']['0']['value']['#default_value'] = $modifiers[5];
+        $form['field_fifth_strength_modifier']['und']['0']['value']['#default_value'] = $strmod;
+        $form['field_fifth_dexterity_modifier']['und']['0']['value']['#default_value'] = $dexmod;
+        $form['field_fifth_constitution_modifie']['und']['0']['value']['#default_value'] = $conmod;
+        $form['field_fifth_intelligence_modifie']['und']['0']['value']['#default_value'] = $intmod;
+        $form['field_fifth_wisdom_modifier']['und']['0']['value']['#default_value'] = $wismod;
+        $form['field_fifth_charisma_modifier']['und']['0']['value']['#default_value'] = $chamod;
+        
+        //setting default skill/initiative values
+        $form['field_fifth_athletics']['und']['0']['value']['#default_value'] = $strmod;
+        $form['field_fifth_initiative']['und']['0']['value']['#default_value'] =
+        $form['field_fifth_acrobatics']['und']['0']['value']['#default_value'] =
+        $form['field_fifth_sleight_of_hand']['und']['0']['value']['#default_value'] =
+        $form['field_fifth_stealth']['und']['0']['value']['#default_value'] = $dexmod;
+        $form['field_fifth_arcana']['und']['0']['value']['#default_value'] =
+        $form['field_fifth_history']['und']['0']['value']['#default_value'] =
+        $form['field_fifth_investigation']['und']['0']['value']['#default_value'] =
+        $form['field_fifth_nature']['und']['0']['value']['#default_value'] =
+        $form['field_fifth_religion']['und']['0']['value']['#default_value'] = $intmod;
+        $form['field_fifth_animal_handling']['und']['0']['value']['#default_value'] =
+        $form['field_fifth_insight']['und']['0']['value']['#default_value'] =
+        $form['field_fifth_medicine']['und']['0']['value']['#default_value'] =
+        $form['field_fifth_perception']['und']['0']['value']['#default_value'] =
+        $form['field_fifth_survival']['und']['0']['value']['#default_value'] = $wismod;
+        $form['field_fifth_deception']['und']['0']['value']['#default_value'] =
+        $form['field_fifth_intimidation']['und']['0']['value']['#default_value'] =
+        $form['field_fifth_performance']['und']['0']['value']['#default_value'] =
+        $form['field_fifth_persuasion']['und']['0']['value']['#default_value'] = $chamod;
+        
+        //adding AJAX to check race and add bonuses accordingly
+        //this is the part being refreshed
+        $form['field_fifth_constitution']['und']['#prefix'] = '<div id="race-check">';
+        $form['field_fifth_constitution']['und']['#suffix'] = '</div>';
+        
+        $form['field_fifth_wisdom']['und']['#prefix'] = '<div id="subrace-check">';
+        $form['field_fifth_wisdom']['und']['#suffix'] = '</div>';
+
+        
+        
+        
+        //triggers the replacement
+        $form['field_race']['und']['#ajax'] = array(
+            'callback' => 'character_attributes_custom_ajax_callback',
+            'wrapper' => 'race-check',
+        );
+        
+        $form['field_fifth_dwarven_sub_race']['und']['#ajax'] = array(
+            'callback' => 'character_attributes_custom_ajax_callback2',
+            'wrapper' => 'subrace-check',
+        );
+
+        
+        // print '<pre>';
+        // print_r($form);
+        // print '</pre>';
+                    
+        //logic for AJAX call
+        if(!empty($form_state['values']['field_race'])) {
+            if ($form_state['values']['field_race']['und'][0]['value']='Dwarf') {
+                $current_con = $form_state['input']['field_fifth_constitution']['und'][0]['value'];
+                unset($form_state['input']['field_fifth_constitution']['und'][0]['value']);
+                $form['field_fifth_constitution']['und'][0]['value']['#default_value'] = 2+$current_con;
+            } 
+        }
+        if(!empty($form_state['values']['field_fifth_dwarven_sub_race'])) {
+            if ($form_state['values']['field_fifth_dwarven_sub_race']['und'][0]['value']='Hill') {
+                $current_wis = $form_state['input']['field_fifth_wisdom']['und'][0]['value'];
+                unset($form_state['input']['field_fifth_wisdom']['und'][0]['value']);
+                $form['field_fifth_wisdom']['und'][0]['value']['#default_value'] = 1+$current_wis;
+            } 
+        }
+        
+        //testing background options
+        $options = array(
+            'testkey' => 'testvalue',
+            'testkey2' => 'testvalue2',
+        );
+        $form['field_fifth_backgrounds']['und']['#ajax'] = array(
+                'wrapper' => 'personality-wrapper',
+                'callback' => 'character_attributes_ajax_callback',
+        );
+
+        $form['field_fifth_background_personali'] = array('#prefix' => '<div class="personality-wrapper">', '#suffix' => '</div>');
+        $form['field_fifth_background_personali']['und'] = array(
+          '#options' => $options,
+        );
+        
+        $background = isset($form_state['values']['field_fifth_backgrounds']) ? $form_state['values']['field_fifth_backgrounds'] : 'default';
+        switch ($background) {
+            case 'default':
+                $options = array();
+            break;
+            case 'Acolyte':
+                $options = array(
+                    'test' => 'test',
+                );
+            break;
+        }
     }   
 }
+
+// AJAX callback function
+function character_attributes_custom_ajax_callback($form, $form_state) {
+    return $form['field_fifth_constitution'];
+}
+
+function character_attributes_custom_ajax_callback2($form, $form_state) {
+    return $form['field_fifth_wisdom'];
+}
+
+function character_attributes_ajax_callback($form, $form_state) {
+    return $form['field_fifth_background_personali'];
+}
+
+

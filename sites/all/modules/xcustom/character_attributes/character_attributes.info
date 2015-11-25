@@ -1,4 +1,4 @@
 name = Set character attributes
 description = Handle assigning of character attributes
-package = Custom
+package = DnD Suite
 core = 7.x

@@ -1,0 +1,4 @@
+name = Set character skill values
+description = Handle assigning of character skills
+package = DnD Suite
+core = 7.x

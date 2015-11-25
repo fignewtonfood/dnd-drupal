@@ -1,3 +1,133 @@
 .hide {
     display: none;
 }
+
+#character-name {
+    float: left;
+    font-size: 50px;
+    padding-right: 10px;
+}
+
+#class-race {
+    font-size: 20px;
+    word-wrap:normal;
+
+}
+
+.abilities-pane {
+    background-color: orange;
+	color: #fff;
+	font-weight: bold;
+	padding: 6px;
+	line-height: 0.5;
+	text-align: center;
+	border-radius: 8px;
+	margin-bottom: 3px;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+}
+
+.skills-pane {
+    background-color: #888;
+	color: #fff;
+	font-weight: bold;
+	padding: 6px;
+	line-height: 1;
+	text-align: center;
+	border-radius: 8px;
+	margin-bottom: 1.8px;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+}
+
+.skills-proficient {
+    background-color: green;
+	color: #fff;
+	font-weight: bold;
+	padding: 6px;
+	line-height: 1;
+	text-align: center;
+	border-radius: 8px;
+	margin-bottom: 1.8px;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+}
+
+.stats-pane {
+    background-color: red;
+	color: #fff;
+	font-weight: bold;
+	padding: 9px;
+	padding-top: 0;
+	line-height: 1.3;
+	text-align: center;
+	border-radius: 8px;
+	margin-bottom: 1.8px;
+	flex-grow: 1;
+	margin: 2px;
+	font-size: 15px;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+}
+
+.stats-pane-1 {
+    display: flex;
+}
+
+.ability-modifier {
+    font-size: 50px;
+}
+
+.hp-pane {
+    margin-top: 15px;
+    border: none;
+    display: block;
+    border-top: 2px solid white;
+    padding-top: 75px;
+}
+
+.death-saving-throws {
+    display: inline-flex;
+}
+
+.bubble {
+    margin: 5px;  
+    margin-top: 6px;
+    background: white;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.personality-pane {
+    background-color: blue;
+	color: #baeeff;
+	font-weight: bold;
+	padding: 9px;
+	padding-top: 0;
+	line-height: 1.3;
+	text-align: center;
+	border-radius: 8px;
+	margin-bottom: 1.8px;
+	flex-grow: 1;
+	margin: 2px;
+	font-size: 15px;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+}
+
+.personality-title {
+    font-weight: bolder;
+    text-align: center;
+    letter-spacing: 30px;
+    font-size: 20px;
+    padding: 4px 8px 6px;
+    color: white;
+}
+
+/*.field-group-format-wrapper .required-fields .ui-accordion-content */
+/*.ui-helper-reset .ui-widget-content .ui-corner-bottom */
+/*.ui-accordion-content-active {*/
+/*    background-color: red;*/
+/*    height: auto !important;*/
+/*}*/
