@@ -125,66 +125,151 @@ function character_attributes_form_alter(&$form, &$form_state, $form_id, $node) 
         $form['field_fifth_performance']['und']['0']['value']['#default_value'] =
         $form['field_fifth_persuasion']['und']['0']['value']['#default_value'] = $chamod;
         
+        //setting default proficiency values
+        $form['field_fifth_armor_proficiency']['und']['0']['value']['#default_value'] = "Light, Medium, Shields";
+        $form['field_fifth_weapon_proficiency']['und']['0']['value']['#default_value'] = "All simple";
+        
+        //class features
+        $cleric_features = array();
+        $cleric_features[] = "Spellcasting.
+As a conduit for divine power, you can cast cleric spells.";
+        $cleric_features[] = "Cantrips.
+At 1st level, you know three cantrips of your choice from the cleric spell list.";
+        $cleric_features[] = "Preparing and Casting Spells.
+To cast one of these spells, you must expend a slot of the spell’s level or higher. You regain all expended spell slots when you finish a long rest.
+You prepare the list of cleric spells that are available for you to cast, choosing from the cleric spell list. When you do so, choose a number of cleric spells equal to your Wisdom modifier + your cleric level (minimum of one spell). The spells must be of a level for which you have spell slots.
+You can change your list of prepared spells when you finish a long rest. Preparing a new list of cleric spells requires time spent in prayer and meditation: at least 1 minute per spell level for each spell on your list.";
+        $cleric_features[] = "Spellcasting Ability.
+Wisdom is your spellcasting ability for your cleric spells. The power of your spells comes from your devotion to your deity. You use your Wisdom whenever a cleric spell refers to your spellcasting ability. In addition, you use your Wisdom modifier when setting the saving throw DC for a cleric spell you cast and when making an attack roll with one.";
+        $cleric_features[] = "Ritual Casting.
+You can cast a cleric spell as a ritual if that spell has the ritual tag and you have the spell prepared.";
+        $cleric_features[] = "Spellcasting Focus.
+You can use a holy symbol as a spellcasting focus for your cleric spells.";
+        $cleric_features[] = "Divine Domain.
+Choose one domain related to your deity: Knowledge, Life, Light, Nature, Tempest, Trickery, or War.
+Your choice grants you domain spells and other features when you choose it at 1st level. It also grants you additional ways to use Channel Divinity when you gain that feature at 2nd level, and additional benefits at 6th, 8th, and 17th levels.";
+        $cleric_features[] = "Domain Spells.
+Each domain has a list of spells—its domain spells—that you gain at the cleric levels noted in the domain description. Once you gain a domain spell, you always have it prepared, and it doesn’t count against the number of spells you can prepare each day.
+If you have a domain spell that doesn’t appear on the cleric spell list, the spell is nonetheless a cleric spell for you.";
+
+        //setting cleric features default values
+        $i = 0;
+        while($i<count($cleric_features)) {
+            $form['field_fifth_class_features']['und'][$i]['value']['#default_value'] = $cleric_features[$i];
+            $i++;
+        }
+        
         //adding AJAX to check race and add bonuses accordingly
         //this is the part being refreshed
+        //race-check prefix ids
         $form['field_fifth_constitution']['und']['#prefix'] = '<div id="race-check-con">';
         $form['field_fifth_speed']['und']['#prefix'] = '<div id="race-check-speed">';
         $form['field_fifth_racial_features']['und']['#prefix'] = '<div id="race-check-features">';
         $form['field_fifth_constitution_modifie']['und']['#prefix'] = '<div id="race-check-conmod">';
         $form['field_fifth_hit_dice']['und']['#prefix'] = '<div id="race-check-hit-dice">';
+        $form['field_fifth_weapon_proficiency']['und']['#prefix'] = '<div id="race-check-weapon-proficiency">';
+        $form['field_fifth_languages']['und']['#prefix'] = '<div id="race-check-language">';
+        //subrace-check prefix ids
+        $form['field_fifth_wisdom']['und']['#prefix'] = '<div id="subrace-check-wis">';
+        $form['field_fifth_subracial_features']['und']['#prefix'] = '<div id="subrace-check-features">';
+        $form['field_fifth_hit_points']['und']['#prefix'] = '<div id="subrace-check-hp">';
+        $form['field_fifth_strength']['und']['#prefix'] = '<div id="subrace-check-strength">';
+        //domain-check prefix ids
+        $form['field_fifth_domain_features']['und']['#prefix'] = '<div id="domain-check-features">';
+        //background-check prefix ids
+        $form['field_fifth_background_feature']['und']['#prefix'] = '<div id="background-check-feature">';
+        $form['field_fifth_background_skills']['und']['#prefix'] = '<div id="background-check-skills">';
+        $form['field_fifth_background_tool_prof']['und']['#prefix'] = '<div id="background-check-tool-proficiency">';
 
+        //suffixes
         $form['field_fifth_constitution']['und']['#suffix'] = 
         $form['field_fifth_speed']['und']['#suffix'] = 
         $form['field_fifth_racial_features']['und']['#suffix'] = 
         $form['field_fifth_constitution_modifie']['und']['#suffix'] = 
         $form['field_fifth_hit_dice']['und']['#suffix'] = 
-            '</div>';
-
-        $form['field_fifth_wisdom']['und']['#prefix'] = '<div id="subrace-check-wis">';
-        $form['field_fifth_subracial_features']['und']['#prefix'] = '<div id="subrace-check-features">';
-        $form['field_fifth_hit_points']['und']['#prefix'] = '<div id="subrace-check-hp">';
-        
         $form['field_fifth_wisdom']['und']['#suffix'] = 
         $form['field_fifth_hit_points']['und']['#suffix'] = 
-        $form['field_fifth_subracial_features']['und']['#suffix'] = '</div>';
-
-        $dwarven_features = array();
-        $dwarven_features[] = "Age. Dwarves mature at the same rate as humans, but they’re considered young until they reach the age of 50. On average, they live about 350 years.";
-        $dwarven_features[] = "Alignment. Most dwarves are lawful, believing firmly in the benefits of a well-ordered society. They tend toward good as well, with a strong sense of fair play and a belief that everyone deserves to share in the benefits of a just order.";
-        $dwarven_features[] = "Size. Dwarves stand between 4 and 5 feet tall and average about 150 pounds. Your size is Medium.";
-        $dwarven_features[] = "Darkvision. Accustomed to life underground, you have superior vision in dark and dim conditions. You can see in dim light within 60 feet of you as if it were bright light, and in darkness as if it were dim light. You can’t discern color in darkness, only shades of gray.";
-        $dwarven_features[] = "Dwarven Resilience. You have advantage on saving throws against poison, and you have resistance against poison damage.";
-        $dwarven_features[] = "Dwarven Combat Training. You have proficiency with the battleaxe, handaxe, throwing hammer, and warhammer.";
-        $dwarven_features[] = "Tool Proficiency. You gain proficiency with the artisan’s tools of your choice: smith’s tools, brewer’s supplies, or mason’s tools.";
-        $dwarven_features[] = "Stonecunning. Whenever you make an Intelligence (History) check related to the origin of stonework, you are considered proficient in the History skill and add double your proficiency bonus to the check, instead of your normal proficiency bonus.";
-        $dwarven_features[] = "Languages. You can speak, read, and write Common and Dwarvish. Dwarvish is full of hard consonants and guttural sounds, and those characteristics spill over into whatever other language a dwarf might speak.";
+        $form['field_fifth_subracial_features']['und']['#suffix'] = 
+        $form['field_fifth_weapon_proficiency']['und']['#suffix'] = 
+        $form['field_fifth_languages']['und']['#suffix'] = 
+        $form['field_fifth_strength']['und']['#suffix'] =
+        $form['field_fifth_domain_features']['und']['#suffix'] =
+        $form['field_fifth_background_feature']['und']['#suffix'] = 
+        $form['field_fifth_background_skills']['und']['#suffix'] =
+        $form['field_fifth_background_tool_prof']['und']['#suffix'] = 
+            '</div>';
         
+        
+        //racial features
+        //dwarven
+        $dwarven_features = array();
+        $dwarven_features[] = "Age. 
+Dwarves mature at the same rate as humans, but they’re considered young until they reach the age of 50. On average, they live about 350 years.";
+        $dwarven_features[] = "Alignment. 
+Most dwarves are lawful, believing firmly in the benefits of a well-ordered society. They tend toward good as well, with a strong sense of fair play and a belief that everyone deserves to share in the benefits of a just order.";
+        $dwarven_features[] = "Size. 
+Dwarves stand between 4 and 5 feet tall and average about 150 pounds. Your size is Medium.";
+        $dwarven_features[] = "Darkvision. 
+Accustomed to life underground, you have superior vision in dark and dim conditions. You can see in dim light within 60 feet of you as if it were bright light, and in darkness as if it were dim light. You can’t discern color in darkness, only shades of gray.";
+        $dwarven_features[] = "Dwarven Resilience. 
+You have advantage on saving throws against poison, and you have resistance against poison damage.";
+        $dwarven_features[] = "Stonecunning. 
+Whenever you make an Intelligence (History) check related to the origin of stonework, you are considered proficient in the History skill and add double your proficiency bonus to the check, instead of your normal proficiency bonus.";
+
+        //domain features
+        //knowledge
+        $knowledge_features = array();
+        $knowledge_features[] = "Blessings of Knowledge.
+At 1st level, you learn two languages of your choice.";
+        $knowledge_features[] = "Blessings of Knowledge.
+You also become proficient in your choice of two of the following skills: Arcana, History, Nature, or Religion. Your proficiency bonus is doubled for any ability check you make that uses either of those skills.";
+
+        //background features
+        //acolyte
+        $acolyte_features = array();
+        $acolyte_features[] = "Shelter of the Faithful.
+As an acolyte, you command the respect of those who share your faith, and you can perform the religious ceremonies of your deity. You and your adventuring companions can expect to receive free healing and care at a temple, shrine, or other established presence of your faith, though you must provide any material components needed for spells. Those who share your religion will support you (but only you) at a modest lifestyle.
+You might also have ties to a specific temple dedicated to your chosen deity or pantheon, and you have a residence there. This could be the temple where you used to serve, if you remain on good terms with it, or a temple where you have found a new home. While near your temple, you can call upon the priests for assistance, provided the assistance you ask for is not hazardous and you remain in good standing with your temple.";
+        //charlatan
+        $charlatan_features = array();
+        $charlatan_features[] = "False Identity.
+You have created a second identity that includes documentation, established acquaintances, and disguises that allow you to assume that persona. Additionally, you can forge documents including official papers and personal letters, as long as you have seen an example of the kind of document or the handwriting you are trying to copy.";
+
         //triggers the replacement
+        //race
         $form['field_race']['und']['#ajax'] = array(
-            'callback' => 'character_attributes_dwarven_ajax_callback',
+            'callback' => 'character_attributes_race_ajax_callback',
             'wrapper' => 'race-check',
         );
-        
+        //dwarven subrace
         $form['field_fifth_dwarven_sub_race']['und']['#ajax'] = array(
-            'callback' => 'character_attributes_custom_ajax_callback2',
+            'callback' => 'character_attributes_dwarven_subrace_ajax_callback',
             'wrapper' => 'subrace-check',
         );
+        //cleric domain
+        $form['field_fifth_cleric_domain']['und']['#ajax'] = array(
+            'callback' => 'character_attributes_domain_ajax_callback',
+            'wrapper' => 'domain-check',
+        );
+        //background
+        $form['field_fifth_backgrounds']['und']['#ajax'] = array(
+            'callback' => 'character_attributes_background_ajax_callback',
+            'wrapper' => 'background-check',
+        );
 
-        
+
         // print '<pre>';
-        // print_r($form['field_fifth_racial_features']);
+        // print_r($form);
         // print '</pre>';
         
-                    
         //logic for AJAX call
         //Dwarven logics
+        $current_conmod = isset($form_state['input']['field_fifth_constitution_modifie']['und'][0]['value']) ? $form_state['input']['field_fifth_constitution_modifie']['und'][0]['value'] : "";
         if(!empty($form_state['values']['field_race'])) {
-            if ($form_state['values']['field_race']['und'][0]['value']='Dwarf') {
+            if ($form_state['values']['field_race']['und'][0]['value'] == '1') {
                 $current_con = $form_state['input']['field_fifth_constitution']['und'][0]['value'];
                 unset($form_state['input']['field_fifth_constitution']['und'][0]['value']);
                 $form['field_fifth_constitution']['und'][0]['value']['#default_value'] = 2+$current_con;
-                $current_conmod = $form_state['input']['field_fifth_constitution_modifie']['und'][0]['value'];
-                unset($form_state['input']['field_fifth_constitution_modifie']['und'][0]['value']);
                 $form['field_fifth_constitution_modifie']['und'][0]['value']['#default_value'] = $current_conmod + 1;
                 unset($form_state['input']['field_fifth_speed']['und'][0]['value']);
                 $form['field_fifth_speed']['und'][0]['value']['#default_value'] = 25;
@@ -197,10 +282,15 @@ function character_attributes_form_alter(&$form, &$form_state, $form_id, $node) 
                 }
                 unset($form_state['input']['field_fifth_hit_dice']['und'][0]['value']);
                 $form['field_fifth_hit_dice']['und'][0]['value']['#default_value'] = '1d8';
+                unset($form_state['input']['field_fifth_weapon_proficiency']['und'][0]['value']);
+                $form['field_fifth_weapon_proficiency']['und'][0]['value']['#default_value'] = 'All simple, Battleaxe, Warhammer';
+                unset($form_state['input']['field_fifth_languages']['und'][0]['value']);
+                $form['field_fifth_languages']['und'][0]['value']['#default_value'] = 'Common, Dwarven';
             } 
         }
+        //hill dwarf logics
         if(!empty($form_state['values']['field_fifth_dwarven_sub_race'])) {
-            if ($form_state['values']['field_fifth_dwarven_sub_race']['und'][0]['value'] = 'Hill') {
+            if ($form_state['values']['field_fifth_dwarven_sub_race']['und'][0]['value'] == '1') {
                 $current_wis = $form_state['input']['field_fifth_wisdom']['und'][0]['value'];
                 unset($form_state['input']['field_fifth_wisdom']['und'][0]['value']);
                 $form['field_fifth_wisdom']['und'][0]['value']['#default_value'] = 1 + $current_wis;
@@ -210,24 +300,89 @@ function character_attributes_form_alter(&$form, &$form_state, $form_id, $node) 
                 $form['field_fifth_hit_points']['und'][0]['value']['#default_value'] = $current_conmod + 9;
             }
         }
+        //mountain dwarf logics
+        if(!empty($form_state['values']['field_fifth_dwarven_sub_race'])) {
+            if ($form_state['values']['field_fifth_dwarven_sub_race']['und'][0]['value'] == '2') {
+                $current_str = $form_state['input']['field_fifth_strength']['und'][0]['value'];
+                unset($form_state['input']['field_fifth_strength']['und'][0]['value']);
+                $form['field_fifth_strength']['und'][0]['value']['#default_value'] = 2 + $current_str;
+                unset($form_state['input']['field_fifth_hit_points']['und'][0]['value']);
+                $form['field_fifth_hit_points']['und'][0]['value']['#default_value'] = $current_conmod + 8;
+            }
+        }
+        //knowledge domain logics
+        if(!empty($form_state['values']['field_fifth_cleric_domain'])) {
+            if ($form_state['values']['field_fifth_cleric_domain']['und'][0]['value'] == 'Knowledge') {
+                $i = 0;
+                while($i<count($knowledge_features)) {
+                    unset($form_state['input']['field_fifth_domain_features']['und'][$i]['value']);
+                    $form['field_fifth_domain_features']['und'][$i]['value']['#default_value'] = $knowledge_features[$i];
+                    $i++;
+                }
+            }
+        }
+        //background logics
+        if(!empty($form_state['values']['field_fifth_backgrounds'])) {
+            //acolyte background logics
+            if ($form_state['values']['field_fifth_backgrounds']['und'][0]['value'] == '1') {
+                $i = 0;
+                while($i<count($acolyte_features)) {
+                    unset($form_state['input']['field_fifth_background_feature']['und'][$i]['value']);
+                    $form['field_fifth_background_feature']['und'][$i]['value']['#default_value'] = $acolyte_features[$i];
+                    $i++;
+                }
+                unset($form_state['input']['field_fifth_background_skills']['und'][0]['value']);
+                $form['field_fifth_background_skills']['und'][0]['value']['#default_value'] = 'Insight, Religion';
+            }
+            //charlatan background logics
+            if ($form_state['values']['field_fifth_backgrounds']['und'][0]['value'] == '2') {
+                $i = 0;
+                while($i<count($charlatan_features)) {
+                    unset($form_state['input']['field_fifth_background_feature']['und'][$i]['value']);
+                    $form['field_fifth_background_feature']['und'][$i]['value']['#default_value'] = $charlatan_features[$i];
+                    $i++;
+                }
+                unset($form_state['input']['field_fifth_background_skills']['und'][0]['value']);
+                $form['field_fifth_background_skills']['und'][0]['value']['#default_value'] = 'Deception, Sleight of Hand';
+                unset($form_state['input']['field_fifth_background_tool_prof']['und'][0]['value']);
+                $form['field_fifth_background_tool_prof']['und'][0]['value']['#default_value'] = 'Disguise kit, Forgery kit';
+            }
+        }
     }   
 }
 
 // AJAX callback function
-function character_attributes_dwarven_ajax_callback($form, $form_state) {
+function character_attributes_race_ajax_callback($form, $form_state) {
     $commands = array();
     $commands[] = ajax_command_replace('#race-check-con', drupal_render($form['field_fifth_constitution']));
     $commands[] = ajax_command_replace('#race-check-speed', drupal_render($form['field_fifth_speed']));
     $commands[] = ajax_command_replace('#race-check-features', drupal_render($form['field_fifth_racial_features']));
     $commands[] = ajax_command_replace('#race-check-conmod', drupal_render($form['field_fifth_constitution_modifie']));
     $commands[] = ajax_command_replace('#race-check-hit-dice', drupal_render($form['field_fifth_hit_dice']));
+    $commands[] = ajax_command_replace('#race-check-weapon-proficiency', drupal_render($form['field_fifth_weapon_proficiency']));
+    $commands[] = ajax_command_replace('#race-check-language', drupal_render($form['field_fifth_languages']));
     return array('#type' => 'ajax', '#commands' => $commands);
 }
 
-function character_attributes_custom_ajax_callback2($form, $form_state) {
+function character_attributes_dwarven_subrace_ajax_callback($form, $form_state) {
     $commands = array();
     $commands[] = ajax_command_replace('#subrace-check-wis', drupal_render($form['field_fifth_wisdom']));
     $commands[] = ajax_command_replace('#subrace-check-features', drupal_render($form['field_fifth_subracial_features']));
     $commands[] = ajax_command_replace('#subrace-check-hp', drupal_render($form['field_fifth_hit_points']));
+    $commands[] = ajax_command_replace('#subrace-check-strength', drupal_render($form['field_fifth_strength']));
+    return array('#type' => 'ajax', '#commands' => $commands);
+}
+
+function character_attributes_domain_ajax_callback($form, $form_state) {
+    $commands = array();
+    $commands[] = ajax_command_replace('#domain-check-features', drupal_render($form['field_fifth_domain_features']));
+    return array('#type' => 'ajax', '#commands' => $commands);
+}
+
+function character_attributes_background_ajax_callback($form, $form_state) {
+    $commands = array();
+    $commands[] = ajax_command_replace('#background-check-feature', drupal_render($form['field_fifth_background_feature']));
+    $commands[] = ajax_command_replace('#background-check-skills', drupal_render($form['field_fifth_background_skills']));
+    $commands[] = ajax_command_replace('#background-check-tool-proficiency', drupal_render($form['field_fifth_background_tool_prof']));
     return array('#type' => 'ajax', '#commands' => $commands);
 }

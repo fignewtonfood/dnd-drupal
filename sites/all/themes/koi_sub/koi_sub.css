@@ -11,7 +11,8 @@
 #class-race {
     font-size: 20px;
     word-wrap:normal;
-
+    margin-top: 10px;
+	margin-left: 175px;
 }
 
 .abilities-pane {
@@ -35,7 +36,7 @@
 	line-height: 1;
 	text-align: center;
 	border-radius: 8px;
-	margin-bottom: 1.8px;
+	margin-bottom: 2px;
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
 }
@@ -48,7 +49,7 @@
 	line-height: 1;
 	text-align: center;
 	border-radius: 8px;
-	margin-bottom: 1.8px;
+	margin-bottom: 2px;
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
 }
@@ -139,10 +140,176 @@
 	-webkit-border-radius: 8px;
 }
 
+.proficiencies-pane {
+	display: flex;
+    background-color: #5a5aa5;
+	color: white;
+	padding: 6px;
+	line-height: 1.3;
+	text-align: center;
+	border-radius: 8px;
+	margin-bottom: -10px;
+	flex-grow: 1;
+	font-size: 14px;
+	font-weight: 300;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+}
 
-/*.field-group-format-wrapper .required-fields .ui-accordion-content */
-/*.ui-helper-reset .ui-widget-content .ui-corner-bottom */
-/*.ui-accordion-content-active {*/
-/*    background-color: red;*/
-/*    height: auto !important;*/
-/*}*/
+.saving-throw {
+	background-color: #613f00;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.equipment-pane {
+    background-color: #3131b1;
+	color: white;
+	font-weight: bold;
+	padding: 6px;
+	margin-right: 10px;
+	line-height: 1.3;
+	text-align: center;
+	border-radius: 8px;
+	flex-grow: 1;
+	font-size: 14px;
+	margin-bottom: 4px;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+}
+
+.class-features-pane {
+    background-color: #d2d2d2;
+	color: black;
+	font-weight: bold;
+	padding: 6px;
+	line-height: 1.3;
+	text-align: center;
+	border-radius: 8px;
+	flex-grow: 1;
+	font-size: 14px;
+	margin-bottom: 4px;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+}
+
+.domain-features-pane {
+    background-color: #999999;
+	color: white;
+	font-weight: bolder;
+	padding: 6px;
+	line-height: 1.3;
+	text-align: center;
+	border-radius: 8px;
+	flex-grow: 1;
+	font-size: 14px;
+	margin-bottom: 4px;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+}
+
+.spells-pane {
+	display: flex;
+    background-color: #1c5a4c;
+	color: white;
+	font-weight: bolder;
+	padding: 6px;
+	line-height: 1.3;
+	text-align: left;
+	border-radius: 8px;
+	flex-grow: 1;
+	font-size: 14px;
+	margin-bottom: 4px;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+}
+
+.date{
+	display: none;
+}
+
+.views-label.views-label-field-fifth-level-1-cantrips, 
+.views-label.views-label-field-fifth-lvl1-spells-prepared {
+	font-weight: 700;
+}
+
+.field-label-inline .field-label, 
+.field-label-inline .field-items {
+	display: table-cell;
+}
+
+.field-label-inline .field-label{
+	font-weight: 700;
+}
+
+.node-spells {
+	border: solid transparent;
+	border-width: 10px;
+}
+
+.field-name-field-concentration-bool {
+	display: none;
+}
+
+.node h1.node-title a, 
+.node h2.node-title a{
+	color: aqua;
+}
+
+.views-field-field-fifth-cleric-skills {
+	margin: 14px 0px;
+}
+
+.views-field-field-fifth-knwldge-domainskills {
+	margin-top: -10px;
+}
+
+.node-header {
+	margin: 10px 0;
+}
+
+.node .title-and-meta {
+	padding-left: 0;
+}
+
+.meta {
+	display: none;
+}	
+
+.node-equipment .node-header {
+	margin: 0;
+}
+
+.view-equipment-view .view-content .views-row.views-row-1.views-row-odd.views-row-first.views-row-last {
+	display: flex;
+}
+
+.views-field, 
+.pane-content {
+	flex-grow: 1;
+}
+
+.view-equipment-view .view-content .views-row span {
+	font-size: 20px;
+	font-weight: 600;
+}
+
+.views-field.views-field-field-fifth-cleric-domain {
+	display: none;
+}
+
+.views-field.views-field-field-fifth-bckgrndskll-acolyte.proficiencies-pane {
+	margin-top: 14px;
+}
+
+.proficiencies-pane .field-content {
+	margin-left: 4px;
+}
+
+.field-name-field-ritual-bool {
+	display: none;
+}
+
+.views-field.views-field-field-fifth-background-skills.proficiencies-pane {
+	margin-top: 14px;
+}
