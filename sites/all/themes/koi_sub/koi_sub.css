@@ -311,5 +311,10 @@
 }
 
 .views-field.views-field-field-fifth-background-skills.proficiencies-pane {
-	margin-top: 14px;
+	margin-top: -10px;
+}
+
+.views-field-field-fifth-domain-spells .field-content {
+	display: flex;
+	background: darkcyan;
 }
