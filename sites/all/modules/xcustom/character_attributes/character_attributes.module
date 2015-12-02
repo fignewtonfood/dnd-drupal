@@ -104,27 +104,6 @@ function character_attributes_form_alter(&$form, &$form_state, $form_id, $node) 
         $form['field_fifth_wisdom_modifier']['und']['0']['value']['#default_value'] = $wismod;
         $form['field_fifth_charisma_modifier']['und']['0']['value']['#default_value'] = $chamod;
         
-        //setting default skill/initiative values
-        $form['field_fifth_athletics']['und']['0']['value']['#default_value'] = $strmod;
-        $form['field_fifth_initiative']['und']['0']['value']['#default_value'] =
-        $form['field_fifth_acrobatics']['und']['0']['value']['#default_value'] =
-        $form['field_fifth_sleight_of_hand']['und']['0']['value']['#default_value'] =
-        $form['field_fifth_stealth']['und']['0']['value']['#default_value'] = $dexmod;
-        $form['field_fifth_arcana']['und']['0']['value']['#default_value'] =
-        $form['field_fifth_history']['und']['0']['value']['#default_value'] =
-        $form['field_fifth_investigation']['und']['0']['value']['#default_value'] =
-        $form['field_fifth_nature']['und']['0']['value']['#default_value'] =
-        $form['field_fifth_religion']['und']['0']['value']['#default_value'] = $intmod;
-        $form['field_fifth_animal_handling']['und']['0']['value']['#default_value'] =
-        $form['field_fifth_insight']['und']['0']['value']['#default_value'] =
-        $form['field_fifth_medicine']['und']['0']['value']['#default_value'] =
-        $form['field_fifth_perception']['und']['0']['value']['#default_value'] =
-        $form['field_fifth_survival']['und']['0']['value']['#default_value'] = $wismod;
-        $form['field_fifth_deception']['und']['0']['value']['#default_value'] =
-        $form['field_fifth_intimidation']['und']['0']['value']['#default_value'] =
-        $form['field_fifth_performance']['und']['0']['value']['#default_value'] =
-        $form['field_fifth_persuasion']['und']['0']['value']['#default_value'] = $chamod;
-        
         //setting default proficiency values
         $form['field_fifth_hit_dice']['und'][0]['value']['#default_value'] = '1d8';
         $form['field_fifth_armor_proficiency']['und']['0']['value']['#default_value'] = "Light, Medium, Shields";
@@ -195,6 +174,7 @@ If you have a domain spell that doesn’t appear on the cleric spell list, the s
         $form['field_fifth_background_feature']['und']['#prefix'] = '<div id="background-check-feature">';
         $form['field_fifth_background_skills']['und']['#prefix'] = '<div id="background-check-skills">';
         $form['field_fifth_background_tool_prof']['und']['#prefix'] = '<div id="background-check-tool-proficiency">';
+        $form['field_fifth_starting_money']['und']['#prefix'] = '<div id="background-check-money">';
         //skill updates
         //str
         $form['field_fifth_athletics']['und']['#prefix'] = '<div id="skill-check-rewrite-athletics">';
@@ -289,6 +269,7 @@ If you have a domain spell that doesn’t appear on the cleric spell list, the s
         $form['field_fifth_persuasion_prof']['und']['#suffix'] = 
         $form['field_fifth_religion_proficiency']['und']['#suffix'] = 
         $form['field_fifth_sleight_of_hand_prof']['und']['#suffix'] =
+        $form['field_fifth_starting_money']['und']['#suffix'] =
             '</div>';
         
         //racial features
@@ -464,7 +445,6 @@ You have created a second identity that includes documentation, established acqu
                 $strmod = $form_state['values']['field_fifth_strength_modifier']['und'][0]['value'] + 1;
                 unset($form_state['input']['field_fifth_strength_modifier']['und'][0]['value']);
                 $form['field_fifth_strength_modifier']['und'][0]['value']['#default_value'] = $strmod;
-                
             }
         }
         //elf subrace logics
@@ -549,6 +529,8 @@ You can attempt to hide even when you are only lightly obscured by foliage, heav
         }
         //background logics
         if(!empty($form_state['values']['field_fifth_backgrounds'])) {
+            unset($form_state['input']['field_fifth_starting_money']['und'][0]['value']);
+            $form['field_fifth_starting_money']['und'][0]['value']['#default_value'] = '15 GP';
             //acolyte background logics
             if ($form_state['values']['field_fifth_backgrounds']['und'][0]['value'] == '1') {
                 $i = 0;
@@ -588,7 +570,7 @@ You can attempt to hide even when you are only lightly obscured by foliage, heav
             unset($form_state['input']['field_fifth_stealth']['und'][0]['value']);
             if ($form_state['values']['field_fifth_backgrounds']['und'][0]['value'] == '2') {
                 $form['field_fifth_sleight_of_hand']['und'][0]['value']['#default_value'] = $dexmod + 2;
-                $form['field_fifth_sleight_of_hand_']['und']['#attributes'] = array('checked' => 'checked');
+                $form['field_fifth_sleight_of_hand_prof']['und']['#attributes'] = array('checked' => 'checked');
             } else {
                 $form['field_fifth_sleight_of_hand']['und'][0]['value']['#default_value'] = $dexmod;
             }
@@ -688,6 +670,14 @@ You can attempt to hide even when you are only lightly obscured by foliage, heav
             }
             $form['field_fifth_intimidation']['und'][0]['value']['#default_value'] = $chamod;
             $form['field_fifth_performance']['und'][0]['value']['#default_value'] = $chamod;
+            //con
+            $conmod = $form_state['values']['field_fifth_constitution_modifie']['und'][0]['value'];
+            unset($form_state['input']['field_fifth_hit_points']['und'][0]['value']);
+            if ($form_state['values']['field_fifth_dwarven_sub_race']['und'][0]['value'] == '1') {
+                $form['field_fifth_hit_points']['und'][0]['value']['#default_value'] = $conmod + 9;
+            } else {
+                $form['field_fifth_hit_points']['und'][0]['value']['#default_value'] = $conmod + 8;
+            }
         }
     }   
 }
@@ -747,6 +737,7 @@ function character_attributes_background_ajax_callback($form, $form_state) {
     $commands[] = ajax_command_replace('#background-check-feature', drupal_render($form['field_fifth_background_feature']));
     $commands[] = ajax_command_replace('#background-check-skills', drupal_render($form['field_fifth_background_skills']));
     $commands[] = ajax_command_replace('#background-check-tool-proficiency', drupal_render($form['field_fifth_background_tool_prof']));
+    $commands[] = ajax_command_replace('#background-check-money', drupal_render($form['field_fifth_starting_money']));
     return array('#type' => 'ajax', '#commands' => $commands);
 }
 
@@ -781,5 +772,6 @@ function character_attributes_alignment_ajax_callback($form, $form_state) {
     $commands[] = ajax_command_replace('#prof-check-persuasion', drupal_render($form['field_fifth_persuasion_prof']));
     $commands[] = ajax_command_replace('#prof-check-religion', drupal_render($form['field_fifth_religion_proficiency']));
     $commands[] = ajax_command_replace('#prof-check-sleight-of-hand', drupal_render($form['field_fifth_sleight_of_hand_prof']));
+    $commands[] = ajax_command_replace('#subrace-check-hp', drupal_render($form['field_fifth_hit_points']));
     return array('#type' => 'ajax', '#commands' => $commands);
 }
