@@ -825,3 +825,12 @@ function character_attributes_alignment_ajax_callback($form, $form_state) {
     $commands[] = ajax_command_replace('#skill-check-rewrite-ac', drupal_render($form['field_fifth_armor_class']));
     return array('#type' => 'ajax', '#commands' => $commands);
 }
+
+function character_attributes_form_field_ui_field_edit_form_alter(&$form, &$form_state, $form_id) {
+  // Increase the max cardinality to 20
+  $range = drupal_map_assoc(range(1, 20));
+  $new_options =  array(FIELD_CARDINALITY_UNLIMITED => t('Unlimited')) + $range;
+
+  // Change the options
+  $form['field']['cardinality']['#options'] = $new_options;
+}
