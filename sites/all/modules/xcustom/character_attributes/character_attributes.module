@@ -171,6 +171,7 @@ If you have a domain spell that doesn’t appear on the cleric spell list, the s
         $form['field_fifth_armor_proficiency']['und']['#prefix'] = '<div id="domain-check-armor">';
         $form['field_fifth_domain_spells']['und']['#prefix'] = '<div id="domain-check-spells">';
         $form['field_fifth_class_features']['und']['#prefix'] = '<div id="domain-check-class-features">';
+        $form['field_fifth_lvl1_spells_prepared']['und']['#prefix'] = '<div id="domain-check-class-spells-level-2">';
         //background-check prefix ids
         $form['field_fifth_background_feature']['und']['#prefix'] = '<div id="background-check-feature">';
         $form['field_fifth_background_skills']['und']['#prefix'] = '<div id="background-check-skills">';
@@ -214,6 +215,8 @@ If you have a domain spell that doesn’t appear on the cleric spell list, the s
         $form['field_fifth_persuasion_prof']['und']['#prefix'] = '<div id="prof-check-persuasion">';
         $form['field_fifth_religion_proficiency']['und']['#prefix'] = '<div id="prof-check-religion">';
         $form['field_fifth_sleight_of_hand_prof']['und']['#prefix'] = '<div id="prof-check-sleight-of-hand">';
+        
+        
 
         //suffixes
         $form['field_fifth_constitution']['und']['#suffix'] = 
@@ -276,6 +279,7 @@ If you have a domain spell that doesn’t appear on the cleric spell list, the s
         $form['field_fifth_background_bundle']['und']['#suffix'] =
         $form['field_fifth_armor_class']['und']['#suffix'] = 
         $form['field_fifth_class_features']['und']['#suffix'] = 
+        $form['field_fifth_lvl1_spells_prepared']['und']['#suffix'] =
             '</div>';
         
         //racial features
@@ -378,7 +382,7 @@ You have created a second identity that includes documentation, established acqu
 
 
         // print '<pre>';
-        // print_r($form['field_fifth_cleric_armor_choice']);
+        // print_r($form['field_fifth_lvl1_spells_prepared']);
         // print '</pre>';
 
         //logic for AJAX call
@@ -556,6 +560,8 @@ Beginning at 6th level, you can use your Channel Divinity twice between rests, a
                 $form['field_fifth_class_features']['und'][9]['value']['#default_value'] = "Channel Divinity: Turn Undead.
 As an action, you present your holy symbol and speak a prayer censuring the undead. Each undead that can see or hear you within 30 feet of you must make a Wisdom saving throw. If the creature fails its saving throw, it is turned for 1 minute or until it takes any damage.
 A turned creature must spend its turns trying to move as far away from you as it can, and it can’t willingly move to a space within 30 feet of you. It also can’t take reactions. For its action, it can use only the Dash action or try to escape from an effect that prevents it from moving. If there’s nowhere to move, the creature can use the Dodge action.";
+                $form['field_fifth_lvl1_spells_prepared']['und']['#description'] = "<p>Choose 3</p>
+<p>Choose from: Bane, Bless, Command, Create or Destroy Water, Cure Wounds, Detect Evil and Good, Detect Magic, Detect Poison and Disease, Guiding Bolt, Healing Word, Inflict Wounds, Protection from Evil and Good, Purify Food and Drink, Sanctuary, Shield of Faith</p>";
             }
         }
 
@@ -777,6 +783,7 @@ function character_attributes_domain_ajax_callback($form, $form_state) {
     $commands[] = ajax_command_replace('#domain-check-armor', drupal_render($form['field_fifth_armor_proficiency']));
     $commands[] = ajax_command_replace('#domain-check-spells', drupal_render($form['field_fifth_domain_spells']));
     $commands[] = ajax_command_replace('#domain-check-class-features', drupal_render($form['field_fifth_class_features']));
+    $commands[] = ajax_command_replace('#domain-check-class-spells-level-2', drupal_render($form['field_fifth_lvl1_spells_prepared']));
     return array('#type' => 'ajax', '#commands' => $commands);
 }
 
