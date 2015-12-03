@@ -170,11 +170,13 @@ If you have a domain spell that doesn’t appear on the cleric spell list, the s
         $form['field_fifth_domain_features']['und']['#prefix'] = '<div id="domain-check-features">';
         $form['field_fifth_armor_proficiency']['und']['#prefix'] = '<div id="domain-check-armor">';
         $form['field_fifth_domain_spells']['und']['#prefix'] = '<div id="domain-check-spells">';
+        $form['field_fifth_class_features']['und']['#prefix'] = '<div id="domain-check-class-features">';
         //background-check prefix ids
         $form['field_fifth_background_feature']['und']['#prefix'] = '<div id="background-check-feature">';
         $form['field_fifth_background_skills']['und']['#prefix'] = '<div id="background-check-skills">';
         $form['field_fifth_background_tool_prof']['und']['#prefix'] = '<div id="background-check-tool-proficiency">';
         $form['field_fifth_starting_money']['und']['#prefix'] = '<div id="background-check-money">';
+        $form['field_fifth_background_bundle']['und']['#prefix'] = '<div id="background-check-bundle">';
         //skill updates
         //str
         $form['field_fifth_athletics']['und']['#prefix'] = '<div id="skill-check-rewrite-athletics">';
@@ -183,6 +185,7 @@ If you have a domain spell that doesn’t appear on the cleric spell list, the s
         $form['field_fifth_acrobatics']['und']['#prefix'] = '<div id="skill-check-rewrite-acrobatics">';
         $form['field_fifth_sleight_of_hand']['und']['#prefix'] = '<div id="skill-check-rewrite-sleight-of-hand">';
         $form['field_fifth_stealth']['und']['#prefix'] = '<div id="skill-check-rewrite-stealth">';
+        $form['field_fifth_armor_class']['und']['#prefix'] = '<div id="skill-check-rewrite-ac">';
         //int
         $form['field_fifth_arcana']['und']['#prefix'] = '<div id="skill-check-rewrite-arcana">';
         $form['field_fifth_history']['und']['#prefix'] = '<div id="skill-check-rewrite-history">';
@@ -270,6 +273,9 @@ If you have a domain spell that doesn’t appear on the cleric spell list, the s
         $form['field_fifth_religion_proficiency']['und']['#suffix'] = 
         $form['field_fifth_sleight_of_hand_prof']['und']['#suffix'] =
         $form['field_fifth_starting_money']['und']['#suffix'] =
+        $form['field_fifth_background_bundle']['und']['#suffix'] =
+        $form['field_fifth_armor_class']['und']['#suffix'] = 
+        $form['field_fifth_class_features']['und']['#suffix'] = 
             '</div>';
         
         //racial features
@@ -372,7 +378,7 @@ You have created a second identity that includes documentation, established acqu
 
 
         // print '<pre>';
-        // print_r($form['field_fifth_arcana_proficiency']);
+        // print_r($form['field_fifth_cleric_armor_choice']);
         // print '</pre>';
 
         //logic for AJAX call
@@ -461,7 +467,6 @@ You have created a second identity that includes documentation, established acqu
                 }
                 unset($form_state['input']['field_fifth_weapon_proficiency']['und'][0]['value']);
                 $form['field_fifth_weapon_proficiency']['und'][0]['value']['#default_value'] = "All simple, Longsword, Shortsword, Longbow";
-                $form['field_fifth_racial_spell']['und']['#description'] = 'Any Wizard Cantrip';
             }
             //wood elf logics
             if ($form_state['values']['field_fifth_elven_sub_race']['und'][0]['value'] == '2') {
@@ -513,6 +518,12 @@ You can attempt to hide even when you are only lightly obscured by foliage, heav
                     $i++;
                 }
                 $form['field_fifth_domain_spells']['und']['#description'] = 'Command, Identify';
+                //at level 2
+                if ($form_state['values']['field_fifth_cleric_level']['und'][0]['value'] >= '2') {
+                    unset($form_state['input']['field_fifth_domain_features']['und'][2]['value']);
+                    $form['field_fifth_domain_features']['und'][2]['value']['#default_value'] = "Channel Divinity: Knowledge of the Ages.
+Starting at 2nd level, you can use your Channel Divinity to tap into a divine well of knowledge. As an action, you choose one skill or tool. For 10 minutes, you have proficiency with the chosen skill or tool.";
+                }
             }
             //life domain
             if ($form_state['values']['field_fifth_cleric_domain']['und'][0]['value'] == 'Life') {
@@ -525,8 +536,29 @@ You can attempt to hide even when you are only lightly obscured by foliage, heav
                 unset($form_state['input']['field_fifth_armor_proficiency']['und'][0]['value']);
                 $form['field_fifth_armor_proficiency']['und'][0]['value']['#default_value'] = 'Light, Medium, Heavy, Shields';
                 $form['field_fifth_domain_spells']['und']['#description'] = 'Bless, Cure Wounds';
+                //at level 2
+                if ($form_state['values']['field_fifth_cleric_level']['und'][0]['value'] >= '2') {
+                    unset($form_state['input']['field_fifth_domain_features']['und'][1]['value']);
+                    $form['field_fifth_domain_features']['und'][1]['value']['#default_value'] = "Channel Divinity: Preserve Life.
+Starting at 2nd level, you can use your Channel Divinity to heal the badly injured.
+As an action, you present your holy symbol and evoke healing energy that can restore a number of hit points equal to five times your cleric level. Choose any creatures within 30 feet of you, and divide those hit points among them. This feature can restore a creature to no more than half of its hit point maximum. You can’t use this feature on an undead or a construct.";
+                }
+            }
+            //level logic
+            if ($form_state['values']['field_fifth_cleric_level']['und'][0]['value'] >= '2') {
+                unset($form_state['input']['field_fifth_class_features']['und'][8]['value']);
+                $form['field_fifth_class_features']['und'][8]['value']['#default_value'] = "Channel Divinity.
+At 2nd level, you gain the ability to channel divine energy directly from your deity, using that energy to fuel magical effects. You start with two such effects: Turn Undead and an effect determined by your domain. Some domains grant you additional effects as you advance in levels, as noted in the domain description.
+When you use your Channel Divinity, you choose which effect to create. You must then finish a short or long rest to use your Channel Divinity again.
+Some Channel Divinity effects require saving throws. When you use such an effect from this class, the DC equals your cleric spell save DC.
+Beginning at 6th level, you can use your Channel Divinity twice between rests, and beginning at 18th level. you can use it three times between rests. When you finish a short or long rest, you regain your expended uses.";
+                unset($form_state['input']['field_fifth_class_features']['und'][9]['value']);
+                $form['field_fifth_class_features']['und'][9]['value']['#default_value'] = "Channel Divinity: Turn Undead.
+As an action, you present your holy symbol and speak a prayer censuring the undead. Each undead that can see or hear you within 30 feet of you must make a Wisdom saving throw. If the creature fails its saving throw, it is turned for 1 minute or until it takes any damage.
+A turned creature must spend its turns trying to move as far away from you as it can, and it can’t willingly move to a space within 30 feet of you. It also can’t take reactions. For its action, it can use only the Dash action or try to escape from an effect that prevents it from moving. If there’s nowhere to move, the creature can use the Dodge action.";
             }
         }
+
         //background logics
         if(!empty($form_state['values']['field_fifth_backgrounds'])) {
             unset($form_state['input']['field_fifth_starting_money']['und'][0]['value']);
@@ -541,6 +573,7 @@ You can attempt to hide even when you are only lightly obscured by foliage, heav
                 }
                 unset($form_state['input']['field_fifth_background_skills']['und'][0]['value']);
                 $form['field_fifth_background_skills']['und'][0]['value']['#default_value'] = 'Insight, Religion';
+                $form['field_fifth_background_bundle']['und']['#description'] = 'Choose Acolyte';
             }
             //charlatan background logics
             if ($form_state['values']['field_fifth_backgrounds']['und'][0]['value'] == '2') {
@@ -554,6 +587,7 @@ You can attempt to hide even when you are only lightly obscured by foliage, heav
                 $form['field_fifth_background_skills']['und'][0]['value']['#default_value'] = 'Deception, Sleight of Hand';
                 unset($form_state['input']['field_fifth_background_tool_prof']['und'][0]['value']);
                 $form['field_fifth_background_tool_prof']['und'][0]['value']['#default_value'] = 'Disguise kit, Forgery kit';
+                $form['field_fifth_background_bundle']['und']['#description'] = 'Choose Charlatan';
             }
         }
         if(!empty($form_state['values']['field_fifth_alignment'])) {
@@ -568,6 +602,7 @@ You can attempt to hide even when you are only lightly obscured by foliage, heav
             unset($form_state['input']['field_fifth_acrobatics']['und'][0]['value']);
             unset($form_state['input']['field_fifth_sleight_of_hand']['und'][0]['value']);
             unset($form_state['input']['field_fifth_stealth']['und'][0]['value']);
+            unset($form_state['input']['field_fifth_armor_class']['und'][0]['value']);
             if ($form_state['values']['field_fifth_backgrounds']['und'][0]['value'] == '2') {
                 $form['field_fifth_sleight_of_hand']['und'][0]['value']['#default_value'] = $dexmod + 2;
                 $form['field_fifth_sleight_of_hand_prof']['und']['#attributes'] = array('checked' => 'checked');
@@ -578,6 +613,10 @@ You can attempt to hide even when you are only lightly obscured by foliage, heav
             $form['field_fifth_acrobatics']['und'][0]['value']['#default_value'] = 
             $form['field_fifth_stealth']['und'][0]['value']['#default_value'] = 
             $dexmod;
+            //TODO:fix if statement to correctly check entity field
+            // if ($form_state['values']['field_fifth_cleric_armor_choice']['und'][0]['value'] == 'Scale mail (47)') {
+            //     $form['field_fifth_armor_class']['und'][0]['value']['#default_value'] = 14 + $dexmod;
+            // }
             //int
             $intmod = $form_state['values']['field_fifth_intelligence_modifie']['und'][0]['value'];
             unset($form_state['input']['field_fifth_arcana']['und'][0]['value']);
@@ -673,10 +712,18 @@ You can attempt to hide even when you are only lightly obscured by foliage, heav
             //con
             $conmod = $form_state['values']['field_fifth_constitution_modifie']['und'][0]['value'];
             unset($form_state['input']['field_fifth_hit_points']['und'][0]['value']);
-            if ($form_state['values']['field_fifth_dwarven_sub_race']['und'][0]['value'] == '1') {
-                $form['field_fifth_hit_points']['und'][0]['value']['#default_value'] = $conmod + 9;
+            if ($form_state['values']['field_fifth_cleric_level']['und'][0]['value'] >= '2') {
+                if ($form_state['values']['field_fifth_dwarven_sub_race']['und'][0]['value'] == '1') {
+                    $form['field_fifth_hit_points']['und'][0]['value']['#default_value'] = rand(1, 8) + (2 * $conmod) + 10;
+                } else {
+                    $form['field_fifth_hit_points']['und'][0]['value']['#default_value'] = rand(1, 8) + (2 * $conmod) + 8;
+                }
             } else {
-                $form['field_fifth_hit_points']['und'][0]['value']['#default_value'] = $conmod + 8;
+                if ($form_state['values']['field_fifth_dwarven_sub_race']['und'][0]['value'] == '1') {
+                    $form['field_fifth_hit_points']['und'][0]['value']['#default_value'] = $conmod + 9;
+                } else {
+                    $form['field_fifth_hit_points']['und'][0]['value']['#default_value'] = $conmod + 8;
+                }
             }
         }
     }   
@@ -729,6 +776,7 @@ function character_attributes_domain_ajax_callback($form, $form_state) {
     $commands[] = ajax_command_replace('#domain-check-features', drupal_render($form['field_fifth_domain_features']));
     $commands[] = ajax_command_replace('#domain-check-armor', drupal_render($form['field_fifth_armor_proficiency']));
     $commands[] = ajax_command_replace('#domain-check-spells', drupal_render($form['field_fifth_domain_spells']));
+    $commands[] = ajax_command_replace('#domain-check-class-features', drupal_render($form['field_fifth_class_features']));
     return array('#type' => 'ajax', '#commands' => $commands);
 }
 
@@ -738,6 +786,7 @@ function character_attributes_background_ajax_callback($form, $form_state) {
     $commands[] = ajax_command_replace('#background-check-skills', drupal_render($form['field_fifth_background_skills']));
     $commands[] = ajax_command_replace('#background-check-tool-proficiency', drupal_render($form['field_fifth_background_tool_prof']));
     $commands[] = ajax_command_replace('#background-check-money', drupal_render($form['field_fifth_starting_money']));
+    $commands[] = ajax_command_replace('#background-check-bundle', drupal_render($form['field_fifth_background_bundle']));
     return array('#type' => 'ajax', '#commands' => $commands);
 }
 
@@ -773,5 +822,6 @@ function character_attributes_alignment_ajax_callback($form, $form_state) {
     $commands[] = ajax_command_replace('#prof-check-religion', drupal_render($form['field_fifth_religion_proficiency']));
     $commands[] = ajax_command_replace('#prof-check-sleight-of-hand', drupal_render($form['field_fifth_sleight_of_hand_prof']));
     $commands[] = ajax_command_replace('#subrace-check-hp', drupal_render($form['field_fifth_hit_points']));
+    $commands[] = ajax_command_replace('#skill-check-rewrite-ac', drupal_render($form['field_fifth_armor_class']));
     return array('#type' => 'ajax', '#commands' => $commands);
 }

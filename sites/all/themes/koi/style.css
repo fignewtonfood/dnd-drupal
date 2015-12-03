@@ -30,11 +30,11 @@ body.columns-3 #footer {
   margin: 0 auto;
 }
 body.columns-3 #content-wrapper {
-  width: 54%;
+  width: 70%;
 }
 body.columns-3 #sidebar-first-wrapper,
 body.columns-3 #sidebar-second-wrapper {
-  width: 23%;
+  width: 15%;
 }
 /* 2-column layout */
 body.columns-2 #header,

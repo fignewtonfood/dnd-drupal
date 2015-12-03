@@ -318,3 +318,53 @@
 	display: flex;
 	background: darkcyan;
 }
+
+thead, th {
+	background: #45331D;
+}
+
+th label {
+	color: white;
+}
+
+#closure {
+	display: none;
+}
+
+.form-item.form-type-radio.form-item-field-fifth-cleric-domain-und,
+.form-item.form-type-radio.form-item-field-race-und, 
+.form-item.form-type-radio.form-item-field-fifth-dwarven-sub-race-und, 
+.form-item.form-type-radio.form-item-field-fifth-elven-sub-race-und {
+	padding: 10px;
+	margin-top: -10px;
+	margin-bottom: -10px;
+}
+
+#edit-field-fifth-cleric-domain-und, 
+#edit-field-race-und, 
+#edit-field-fifth-dwarven-sub-race-und, 
+#edit-field-fifth-elven-sub-race-und {
+	display: inline-flex;
+}
+
+.form-radios .form-item-field-fifth-elven-sub-race-und label .form-required,
+.form-radios .form-item-field-fifth-dwarven-sub-race-und label .form-required{
+	display: none;
+}
+
+.ajax-progress-throbber {
+	display: none;
+}
+
+.tabledrag-toggle-weight {
+	display: none;
+}
+
+#edit-field-fifth-racial-spell-und-add-more--2,
+#edit-field-fifth-background-bundle-und-add-more {
+	display: none;
+}
+
+.field-type-list-boolean {
+	display: none;
+}
