@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Spells feature.
+ */
+
+include_once 'spells.features.inc';

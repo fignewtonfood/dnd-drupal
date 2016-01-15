@@ -14,7 +14,7 @@ function panopoly_core_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'ctools_content_all_views';
-  $strongarm->value = 0;
+  $strongarm->value = 1;
   $export['ctools_content_all_views'] = $strongarm;
 
   $strongarm = new stdClass();
@@ -51,6 +51,13 @@ function panopoly_core_strongarm() {
   $strongarm->name = 'panelizer_taxonomy_term:panopoly_categories_allowed_types_default';
   $strongarm->value = 1;
   $export['panelizer_taxonomy_term:panopoly_categories_allowed_types_default'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'pathauto_taxonomy_term_panopoly_categories_pattern';
+  $strongarm->value = 'categories/[term:name]';
+  $export['pathauto_taxonomy_term_panopoly_categories_pattern'] = $strongarm;
 
   return $export;
 }

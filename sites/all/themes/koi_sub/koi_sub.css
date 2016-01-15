@@ -368,3 +368,46 @@ th label {
 .field-type-list-boolean {
 	display: none;
 }
+
+.frontpage-slideshow * {
+	display: inline-block;
+	margin: 0px;
+	padding: 0px;
+}
+
+#main {
+	max-width: 1000px
+}
+
+/*TODO:very bad!!!! Fix this ASAP!*/
+.col-md-4.radix-layouts-sidebar.panel-panel {
+	max-width: 25%;
+}
+
+.col-md-8.radix-layouts-content.panel-panel {
+	min-width: 75%;
+}
+
+h2.views-label {
+	display: block;
+	font-family: cursive;
+	font-weight: 700;
+}
+
+#header {
+	max-width: 1000px;
+}
+
+.views-field.views-field-field-barbarian-image,
+.views-field.views-field-field-bard-image,
+.views-field.views-field-field-druid-image,
+.views-field.views-field-field-fighter-image,
+.views-field.views-field-field-monk-image,
+.views-field.views-field-field-paladin-image,
+.views-field.views-field-field-ranger-image,
+.views-field.views-field-field-rogue-image,
+.views-field.views-field-field-sorcerer-image,
+.views-field.views-field-field-warlock-image,
+.views-field.views-field-field-wizard-image {
+	opacity: 0.4;
+}

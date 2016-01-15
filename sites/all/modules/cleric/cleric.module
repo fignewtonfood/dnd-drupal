@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Cleric feature.
+ */
+
+include_once 'cleric.features.inc';

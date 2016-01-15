@@ -557,13 +557,13 @@ function panopoly_core_defaultconfig_user_default_roles() {
   // Exported role: administrator.
   $roles['administrator'] = array(
     'name' => 'administrator',
-    'weight' => 2,
+    'weight' => 3,
   );
 
   // Exported role: editor.
   $roles['editor'] = array(
     'name' => 'editor',
-    'weight' => 3,
+    'weight' => 4,
   );
 
   return $roles;

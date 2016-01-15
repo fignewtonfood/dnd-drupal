@@ -4,6 +4,7 @@ function character_attributes_form_alter(&$form, &$form_state, $form_id, $node) 
     // find form id on target page
     // print_r($form_id);
     if ($form_id == 'fifth_cleric_character_node_form') {
+        
         // print entire form so that you can find a specific value
         // print '<pre>';
         // print_r($form);
@@ -382,8 +383,13 @@ You have created a second identity that includes documentation, established acqu
 
 
         // print '<pre>';
-        // print_r($form['field_fifth_lvl1_spells_prepared']);
+        // print_r(entity_get_info());
         // print '</pre>';
+        
+        // print '<pre>';
+        // print_r($form_state['values']['field_fifth_constitution']['und'][0]['value']);
+        // print '</pre>';
+
 
         //logic for AJAX call
         if(!empty($form_state['values']['field_race'])) {
@@ -521,7 +527,7 @@ You can attempt to hide even when you are only lightly obscured by foliage, heav
                     $form['field_fifth_domain_features']['und'][$i]['value']['#default_value'] = $knowledge_features[$i];
                     $i++;
                 }
-                $form['field_fifth_domain_spells']['und']['#description'] = 'Command, Identify';
+                $form['field_fifth_domain_spells']['und']['#description'] = '<p>Command & Identify</p>';
                 //at level 2
                 if ($form_state['values']['field_fifth_cleric_level']['und'][0]['value'] >= '2') {
                     unset($form_state['input']['field_fifth_domain_features']['und'][2]['value']);
@@ -539,7 +545,7 @@ Starting at 2nd level, you can use your Channel Divinity to tap into a divine we
                 }
                 unset($form_state['input']['field_fifth_armor_proficiency']['und'][0]['value']);
                 $form['field_fifth_armor_proficiency']['und'][0]['value']['#default_value'] = 'Light, Medium, Heavy, Shields';
-                $form['field_fifth_domain_spells']['und']['#description'] = 'Bless, Cure Wounds';
+                $form['field_fifth_domain_spells']['und']['#description'] = '<p>Bless & Cure Wounds</p>';
                 //at level 2
                 if ($form_state['values']['field_fifth_cleric_level']['und'][0]['value'] >= '2') {
                     unset($form_state['input']['field_fifth_domain_features']['und'][1]['value']);
@@ -560,8 +566,11 @@ Beginning at 6th level, you can use your Channel Divinity twice between rests, a
                 $form['field_fifth_class_features']['und'][9]['value']['#default_value'] = "Channel Divinity: Turn Undead.
 As an action, you present your holy symbol and speak a prayer censuring the undead. Each undead that can see or hear you within 30 feet of you must make a Wisdom saving throw. If the creature fails its saving throw, it is turned for 1 minute or until it takes any damage.
 A turned creature must spend its turns trying to move as far away from you as it can, and it can’t willingly move to a space within 30 feet of you. It also can’t take reactions. For its action, it can use only the Dash action or try to escape from an effect that prevents it from moving. If there’s nowhere to move, the creature can use the Dodge action.";
-                $form['field_fifth_lvl1_spells_prepared']['und']['#description'] = "<p>Choose 3</p>
-<p>Choose from: Bane, Bless, Command, Create or Destroy Water, Cure Wounds, Detect Evil and Good, Detect Magic, Detect Poison and Disease, Guiding Bolt, Healing Word, Inflict Wounds, Protection from Evil and Good, Purify Food and Drink, Sanctuary, Shield of Faith</p>";
+                $form['field_fifth_lvl1_spells_prepared']['und']['#description'] = "<p>Choose 3</p>";
+            } 
+            if ($form_state['values']['field_fifth_cleric_level']['und'][0]['value'] >= '2') {
+                unset($form_state['input']['field_fifth_class_features']['und'][8]['value']);
+                $form['field_fifth_lvl1_spells_prepared']['und']['#description'] = "<p>Choose 4</p>";
             }
         }
 
@@ -718,7 +727,13 @@ A turned creature must spend its turns trying to move as far away from you as it
             //con
             $conmod = $form_state['values']['field_fifth_constitution_modifie']['und'][0]['value'];
             unset($form_state['input']['field_fifth_hit_points']['und'][0]['value']);
-            if ($form_state['values']['field_fifth_cleric_level']['und'][0]['value'] >= '2') {
+            if ($form_state['values']['field_fifth_cleric_level']['und'][0]['value'] >= '3') {
+                if ($form_state['values']['field_fifth_dwarven_sub_race']['und'][0]['value'] == '1') {
+                    $form['field_fifth_hit_points']['und'][0]['value']['#default_value'] = rand(1, 8) + rand(1,8) + (3 * $conmod) + 11;
+                } else {
+                    $form['field_fifth_hit_points']['und'][0]['value']['#default_value'] = rand(1, 8) + rand(1,8) + (3 * $conmod) + 8;
+                }
+            } elseif ($form_state['values']['field_fifth_cleric_level']['und'][0]['value'] == '2') {
                 if ($form_state['values']['field_fifth_dwarven_sub_race']['und'][0]['value'] == '1') {
                     $form['field_fifth_hit_points']['und'][0]['value']['#default_value'] = rand(1, 8) + (2 * $conmod) + 10;
                 } else {
@@ -732,7 +747,9 @@ A turned creature must spend its turns trying to move as far away from you as it
                 }
             }
         }
-    }   
+    } 
+    // dpm($form_state, "fs");
+    // dpm($form, "form");
 }
 
 // AJAX callback function

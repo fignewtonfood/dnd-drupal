@@ -5,26 +5,26 @@
 function character_cleric_form_alter(&$form, &$form_state, $form_id, $node) {
   // find form id on target page
   // print_r($form_id);
-  if ($form_id == 'fifth_cleric_character_node_form') {
-    // print entire form so that you can find a specific value
-    // print '<pre>';
-    // print_r($form);
-    // print '</pre>';
+  // if ($form_id == 'fifth_cleric_character_node_form') {
+  //   // print entire form so that you can find a specific value
+  //   // print '<pre>';
+  //   // print_r($form);
+  //   // print '</pre>';
     
-    // $form['#node']['title'] = "";
+  //   // $form['#node']['title'] = "";
     
-    $form['revision_information']['#access'] = FALSE;
-    // $form['#after_build'][] = 'custom_after_build';
-    $form['author']['#access'] = FALSE;
-    $form['translations']['#access'] = FALSE;
-    $form['options']['#access'] = FALSE;
+  //   $form['revision_information']['#access'] = FALSE;
+  //   // $form['#after_build'][] = 'custom_after_build';
+  //   $form['author']['#access'] = FALSE;
+  //   $form['translations']['#access'] = FALSE;
+  //   $form['options']['#access'] = FALSE;
     
-    // function custom_after_build($form, &$form_state) { 
-    //   // $form['path']['#access'] = FALSE; 
-    //   // $form['menu']['#access'] = FALSE; 
-    //   // $form['comment_settings']['#access'] = FALSE;
-    //   return ($form); 
-    // }
-  }   
+  //   // function custom_after_build($form, &$form_state) { 
+  //   //   // $form['path']['#access'] = FALSE; 
+  //   //   // $form['menu']['#access'] = FALSE; 
+  //   //   // $form['comment_settings']['#access'] = FALSE;
+  //   //   return ($form); 
+  //   // }
+  // }   
 }
 
