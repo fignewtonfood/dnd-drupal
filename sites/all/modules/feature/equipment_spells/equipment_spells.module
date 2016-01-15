@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Custom Content feature.
+ */
+
+include_once 'equipment_spells.features.inc';

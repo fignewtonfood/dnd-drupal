@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * spells.features.inc
+ * equipment_spells.features.inc
  */
 
 /**
  * Implements hook_ctools_plugin_api().
  */
-function spells_ctools_plugin_api($module = NULL, $api = NULL) {
+function equipment_spells_ctools_plugin_api($module = NULL, $api = NULL) {
   if ($module == "strongarm" && $api == "strongarm") {
     return array("version" => "1");
   }
@@ -16,8 +16,16 @@ function spells_ctools_plugin_api($module = NULL, $api = NULL) {
 /**
  * Implements hook_node_info().
  */
-function spells_node_info() {
+function equipment_spells_node_info() {
   $items = array(
+    'equipment' => array(
+      'name' => t('Equipment'),
+      'base' => 'node_content',
+      'description' => t('Add equipment'),
+      'has_title' => '1',
+      'title_label' => t('Title'),
+      'help' => '',
+    ),
     'spells' => array(
       'name' => t('Spells'),
       'base' => 'node_content',
