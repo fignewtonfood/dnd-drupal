@@ -127,7 +127,7 @@ You can cast a cleric spell as a ritual if that spell has the ritual tag and you
         $cleric_features[] = "Spellcasting Focus.
 You can use a holy symbol as a spellcasting focus for your cleric spells.";
         $cleric_features[] = "Divine Domain.
-Choose one domain related to your deity: Knowledge, Life, Light, Nature, Tempest, Trickery, or War.
+Choose one domain related to your deity: Knowledge, Life, Light, Nature, Tempest, Trickery, or War. [Only Life is available]
 Your choice grants you domain spells and other features when you choose it at 1st level. It also grants you additional ways to use Channel Divinity when you gain that feature at 2nd level, and additional benefits at 6th, 8th, and 17th levels.";
         $cleric_features[] = "Domain Spells.
 Each domain has a list of spells—its domain spells—that you gain at the cleric levels noted in the domain description. Once you gain a domain spell, you always have it prepared, and it doesn’t count against the number of spells you can prepare each day.
@@ -323,15 +323,6 @@ You have disadvantage on attack rolls and on Wisdom (Perception) checks that rel
 When you reach 3rd level, you can cast the faerie fire spell once per day. When you reach 5th level, you can also cast the darkness spell once per day. Charisma is your spellcasting ability for these spells.";
 
         //domain features
-        //knowledge
-        $knowledge_features = array();
-        $knowledge_features[] = "Blessings of Knowledge.
-At 1st level, you learn two languages of your choice.";
-        $knowledge_features[] = "Blessings of Knowledge.
-You also become proficient in your choice of two of the following skills: Arcana, History, Nature, or Religion. Your proficiency bonus is doubled for any ability check you make that uses either of those skills.";
-        $knowledge_spells = array();
-        $knowledge_spells[] = "Command (86)";
-        $knowledge_spells[] = "Identify (110)";
         //life
         $life_features = array();
         $life_features[] = "Disciple of Life.
@@ -519,22 +510,6 @@ You can attempt to hide even when you are only lightly obscured by foliage, heav
         }
         //domain logics
         if(!empty($form_state['values']['field_fifth_cleric_domain'])) {
-            //knowledge domain
-            if ($form_state['values']['field_fifth_cleric_domain']['und'][0]['value'] == 'Knowledge') {
-                $i = 0;
-                while($i<count($knowledge_features)) {
-                    unset($form_state['input']['field_fifth_domain_features']['und'][$i]['value']);
-                    $form['field_fifth_domain_features']['und'][$i]['value']['#default_value'] = $knowledge_features[$i];
-                    $i++;
-                }
-                $form['field_fifth_domain_spells']['und']['#description'] = '<p>Command & Identify</p>';
-                //at level 2
-                if ($form_state['values']['field_fifth_cleric_level']['und'][0]['value'] >= '2') {
-                    unset($form_state['input']['field_fifth_domain_features']['und'][2]['value']);
-                    $form['field_fifth_domain_features']['und'][2]['value']['#default_value'] = "Channel Divinity: Knowledge of the Ages.
-Starting at 2nd level, you can use your Channel Divinity to tap into a divine well of knowledge. As an action, you choose one skill or tool. For 10 minutes, you have proficiency with the chosen skill or tool.";
-                }
-            }
             //life domain
             if ($form_state['values']['field_fifth_cleric_domain']['und'][0]['value'] == 'Life') {
                 $i = 0;
